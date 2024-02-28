@@ -1,0 +1,243 @@
+import { useContext, useMemo, useState, useRef } from "react";
+import UserBox from "./UserBox";
+import { UsersContext } from "../contexts/UsersContextProvider";
+import Search from "./../assets/search.svg";
+import {
+  List,
+  AutoSizer,
+  CellMeasurer,
+  CellMeasurerCache,
+} from "react-virtualized";
+
+const ActiveMembers = () => {
+  // console.log(Search);
+  // autoSizer stuff
+  const cache = useRef(
+    new CellMeasurerCache({
+      fixedWidth: true,
+      defaultHeight: 45,
+    }),
+  );
+
+  // needed states
+  const [searchValue, setSearchValue] = useState("");
+  const { users, userDetails, isPinned } = useContext(UsersContext);
+  const inputRef = useRef(null);
+  // search functionality
+  let searchTimeout;
+  const changeSearchValue = (e) => {
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    searchTimeout = setTimeout(() => {
+      setSearchValue(e.target.value);
+    }, 200);
+  };
+
+  // filter users based on search
+  const filteredUsers = useMemo(() => {
+    // console.log('ran search');
+    searchValue && console.log("::searched for ", searchValue);
+    return users.filter(({ id: userId }) => {
+      if (!userDetails[userId]) return false;
+      return userDetails[userId].name
+        .toLowerCase()
+        .includes(searchValue.toLowerCase());
+    });
+  }, [searchValue, users]);
+  // console.log('user Details : ', userDetails);
+  // console.log('filtered users : ', filteredUsers);
+  // sort users based on pinned status
+  const pinnedUsers = filteredUsers
+    .filter(({ id }) => isPinned.get(id))
+    .sort((a, b) => {
+      return isPinned.get(b.id) - isPinned.get(a.id);
+    });
+  // console.log('pinned users : ', pinnedUsers);
+  // final sorted users pinned on top of unpinned users
+  const sortedUsers = [
+    ...pinnedUsers,
+    ...filteredUsers.filter(
+      ({ id }) => !isPinned.get(id),
+    ) /* Nonpinned users */,
+  ];
+
+  // console.log('sorted users : ', sortedUsers);
+
+  return (
+    <>
+      <div className="user scrollbar-dummy">
+        <input
+          type="text"
+          className="user rounded-md pb-0"
+          onChange={changeSearchValue}
+          defaultChecked={searchValue}
+          placeholder="Search"
+          ref={inputRef}
+        />
+        <div
+          className="search"
+          onClick={() => {
+            inputRef.current.focus();
+          }}
+        >
+          <img src={Search} />
+        </div>
+      </div>
+      <div className="activemembers">
+        <AutoSizer>
+          {({ width, height }) => {
+            return (
+              <List
+                width={width}
+                height={height}
+                deferredMeasurementCache={cache.current}
+                rowCount={sortedUsers.length}
+                rowHeight={cache.current.rowHeight}
+                rowRenderer={({ key, index, style, parent }) => {
+                  const { id } = sortedUsers[index];
+                  return (
+                    <CellMeasurer
+                      key={key}
+                      cache={cache.current}
+                      parent={parent}
+                      columnIndex={0}
+                      rowIndex={index}
+                    >
+                      <div style={style}>
+                        <UserBox
+                          id={id}
+                          key={key}
+                          isPinned={isPinned.get(id)}
+                          // style={style}
+                          userName={userDetails[id].name}
+                        />
+                      </div>
+                    </CellMeasurer>
+                  );
+                }}
+              />
+            );
+          }}
+        </AutoSizer>
+      </div>
+    </>
+  );
+};
+
+export default ActiveMembers;
+
+// const ActiveMembers = () => {
+//   const cache = useRef(
+//     new CellMeasurerCache({
+//       fixedWidth: true,
+//       fixedHeight: false,
+//       defaultHeight: 45,
+//     })
+//   );
+
+//   const [searchValue, setSearchValue] = useState("");
+//   const { users, userDetails, isPinned } = useContext(UsersContext);
+//   const inputRef = useRef(null);
+//   let searchTimeout;
+//   const changeSearchValue = (e) => {
+//     if (searchTimeout) {
+//       clearTimeout(searchTimeout);
+//     }
+//     searchTimeout = setTimeout(() => {
+//       setSearchValue(e.target.value);
+//     }, 200);
+//   };
+
+//   const filteredUsers = useMemo(() => {
+//     searchValue && console.log("::searched for ", searchValue);
+//     return users.filter(({ id: userId }) => {
+//       if (!userDetails[userId]) return false;
+//       return userDetails[userId].name
+//         .toLowerCase()
+//         .includes(searchValue.toLowerCase());
+//     });
+//   }, [searchValue, users]);
+
+//   const pinnedUsers = filteredUsers
+//     .filter(({ id }) => isPinned.get(id))
+//     .sort((a, b) => {
+//       return isPinned.get(b.id) - isPinned.get(a.id);
+//     });
+
+//   const sortedUsers = [
+//     ...pinnedUsers,
+//     ...filteredUsers.filter(
+//       ({ id }) => isPinned.get(id) == undefined
+//     ) /* Nonpinned users */,
+//   ];
+
+//   // console.log(sortedUsers);
+
+//   return (
+//     <>
+//       <div className="user scrollbar-dummy">
+//         <input
+//           type="text"
+//           className="user rounded-md pb-0"
+//           onChange={changeSearchValue}
+//           defaultChecked={searchValue}
+//           placeholder="Search"
+//           ref={inputRef}
+//         />
+//         <div
+//           className="search"
+//           onClick={() => {
+//             inputRef.current.focus();
+//           }}
+//         >
+//           <svg
+//             viewBox="0 0 24 24"
+//             height="24"
+//             width="24"
+//             preserveAspectRatio="xMidYMid meet"
+//             className="search"
+//             version="1.1"
+//             x="0px"
+//             y="0px"
+//             enableBackground="new 0 0 24 24"
+//           >
+//             <title>search</title>
+//             <path
+//               fill="currentColor"
+//               d="M15.009,13.805h-0.636l-0.22-0.219c0.781-0.911,1.256-2.092,1.256-3.386 c0-2.876-2.332-5.207-5.207-5.207c-2.876,0-5.208,2.331-5.208,5.207s2.331,5.208,5.208,5.208c1.293,0,2.474-0.474,3.385-1.255 l0.221,0.22v0.635l4.004,3.999l1.194-1.195L15.009,13.805z M10.201,13.805c-1.991,0-3.605-1.614-3.605-3.605 s1.614-3.605,3.605-3.605s3.605,1.614,3.605,3.605S12.192,13.805,10.201,13.805z"
+//             ></path>
+//           </svg>
+//         </div>
+//       </div>
+//       <div className="activemembers">
+//         <AutoSizer>
+//           {({ width, height }) => {
+//             return (
+//               <List
+//                 width={width}
+//                 height={height}
+//                 // rowHeight={45}
+//                 rowHeight={cache.current.rowHeight}
+//                 deferredMeasurementCache={cache.current}
+
+//                 rowCount={sortedUsers.length}
+//                 rowRenderer={({ key, index, style, parent }) => {
+//                   const { id } = sortedUsers[index];
+//                   // console.log('::id is - ', id);
+//                   return (
+//                     <UserBox id={id} key={key} style={style} userName={userDetails[id].name} />
+//                   );
+//                 }}
+//               />
+//             );
+//           }}
+//         </AutoSizer>
+//       </div>
+//     </>
+//   );
+// };
+
+// import React, { useRef, useState, useContext } from 'react';
+// import { AutoSizer, List, CellMeasurerCache } from 'react-virtualized';
+// import UserBox from './UserBox'; // Make sure to import the UserBox component

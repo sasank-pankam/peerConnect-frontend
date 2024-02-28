@@ -1,0 +1,288 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  cursor: default;
+  font-size: large;
+}
+
+#root {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+}
+.root-container {
+  height: 97vh;
+  width: 98%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 0.6rem 1rem 0.4rem 1rem;
+  background-color: lightgrey;
+  border-radius: 0.3rem;
+}
+
+.header-container {
+  display: grid;
+  grid-template-columns: 5fr 19fr;
+  /* align-items: center;
+    justify-content: center; */
+}
+
+.my-user-name,
+.current-username {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.current-username {
+  margin-left: 0.3rem;
+  /* border-left: 0.1rem solid grey; */
+}
+
+.details {
+  display: flex;
+  gap: 1rem;
+}
+.message {
+  background: rgba(128, 128, 128, 0.233);
+  width: fit-content;
+  border-radius: 0.25rem;
+  padding: 0.4rem;
+  margin: 0.3rem;
+}
+
+.message-content {
+  font-size: 0.95rem;
+  color: black;
+  font-weight: 500;
+}
+
+.chats-container {
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+  display: none;
+  flex-direction: column;
+  /*scroll-behavior: smooth;*/
+  flex-flow: column nowrap;
+  /* justify-content: flex-end; */
+}
+
+.chats-container > :first-child {
+  margin-top: auto !important;
+}
+
+.main-app-container {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 5fr 19fr;
+  overflow: auto;
+}
+
+input {
+  width: 100%;
+  outline: none;
+  border: none;
+}
+
+.active-users-container {
+  font-size: large;
+  height: 100%;
+  width: 100%;
+  padding-bottom: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  overflow: hidden;
+}
+.activemembers {
+  height: 100%;
+  overflow: scroll;
+  /* padding-bottom: 1rem; */
+  overflow-x: hidden;
+}
+
+.main-chats-container {
+  height: 100%;
+  width: 100%;
+  background-color: aliceblue;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  overflow-y: auto;
+  margin-bottom: 0.5rem;
+}
+
+.user {
+  background: rgba(128, 128, 128, 0.233);
+  cursor: pointer;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  font-size: larger;
+  display: flex;
+  justify-content: space-between;
+}
+.user:hover{
+  background-color: rgba(128, 128, 128, 0.5);
+}
+.user:nth-last-of-type(1) {
+  margin-bottom: 0;
+}
+.scrollbar-dummy {
+  scrollbar-gutter: stable;
+  margin-right: 0.46rem;
+  margin-bottom: 0.2rem; /* search bar bottom padding */
+  padding: 0;
+  font-size: medium;
+}
+
+/* .pinned {
+
+} */
+
+.context-menu {
+  position: fixed;
+  z-index: 1000;
+  background-color: rgba(163, 159, 159, 0.97);
+  border: 1px solid black;
+  border-radius: 0.1rem;
+  padding: 0.2rem;
+  font-size: small;
+  /*display: none;*/
+}
+.search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.count {
+  padding-right: 1rem;
+}
+.input-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  height: fit-content;
+  background-color: rgba(77, 71, 71, 0.629);
+}
+
+.message-input {
+  width: 100%;
+  height: 85%;
+  /* position: fixed; */
+  margin-left: 0.4rem;
+  border-radius: 0.3rem;
+  padding: 0.2rem;
+  border: none;
+  outline: none;
+}
+
+.send-btn {
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+.time {
+  font-size: 0.6rem;
+  align-content: end;
+  padding: 0.1rem;
+  padding-left: 0.3rem;
+}
+
+.main-file-container {
+  font-size: medium;
+  font-weight: 500;
+
+  width: fit-content;
+  height: fit-content;
+
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: center;
+
+  border-radius: 0.3rem;
+}
+
+.icon-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0rem;
+  margin-left: 0.3rem;
+  border-radius: 10%;
+}
+
+.text-div-container {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 0.2rem;
+  align-items: center;
+}
+.file-name-container {
+  padding: 0.3rem;
+}
+
+.lower-icons-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.lower-icons-container > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: small;
+  border-radius: 0.3rem;
+}
+
+/* .activemembers::-moz-scrollbar,
+.activemembers::-webkit-scrollbar {
+  display: none;
+} */
+
+/* .activemembers {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow: scroll; */
+/* overflow-x: hidden; */
+/* max-height: 100%;
+} */
+
+/* Example styles for scrollbar */
+::-webkit-scrollbar {
+  width: 0px; /* Width of the scrollbar */
+}
+a {
+  text-decoration: none;
+  color: rgb(25, 107, 179);
+  cursor: pointer;
+}
+
+a:hover {
+  color: rgb(79, 79, 1);
+}
