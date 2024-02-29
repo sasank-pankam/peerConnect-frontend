@@ -84,14 +84,14 @@ function HeaderPane() {
     }
     [
 
-      getFile('file1.txt', { isSender: true, size: "100 mb", ext: 'txt' }),
-      getFile('file2.txt', { isSender: false, size: "100 mb", ext: 'txt' }),
-      getFile('file3.txt', { isSender: false, size: "100 mb", ext: 'txt' }),
-      getFile('file4.txt', { isSender: true, size: "100 mb", ext: 'txt' }),
-      getFile('file5.txt', { isSender: true, size: "100 mb", ext: 'txt' }),
-      getFile('file6.txt', { isSender: false, size: "100 mb", ext: 'txt' }),
-      getFile('file7.txt', { isSender: false, size: "100 mb", ext: 'txt' }),
-      getFile('file8.txt', { isSender: true, size: "100 mb", ext: 'txt' }),
+      getFile({name:'file1.txt', isSender: true, size: "100 mb", ext: 'txt' }),
+      getFile({name:'file2.txt', isSender: false, size: "100 mb", ext: 'txt' }),
+      getFile({name:'file3.txt', isSender: false, size: "100 mb", ext: 'txt' }),
+      getFile({name:'file4.txt', isSender: true, size: "100 mb", ext: 'txt' }),
+      getFile({name:'file5.txt', isSender: true, size: "100 mb", ext: 'txt' }),
+      getFile({name:'file6.txt', isSender: false, size: "100 mb", ext: 'txt' }),
+      getFile({name:'file7.txt', isSender: false, size: "100 mb", ext: 'txt' }),
+      getFile({name:'file8.txt', isSender: true, size: "100 mb", ext: 'txt' }),
     ].forEach((file) => {
       appendMessageWrapper(file, id);
     });

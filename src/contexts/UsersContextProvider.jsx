@@ -10,7 +10,7 @@ export const UsersProvider = ({ children }) => {
   const positions = new Map();
 
 
-  for (let i = 0; i < 0; i++) {
+  for (let i = 0; i < 9; i++) {
     listOfusers.push({
       id: i,
     });
@@ -93,7 +93,6 @@ export const UsersProvider = ({ children }) => {
       return temp;
     });
   };
-
   const value = {
     users,
     setUsers,

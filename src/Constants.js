@@ -24,6 +24,8 @@ export default {
   FILE_RECEIVED: "this is a file",
   FILE_SENT: "file sent",
 
+  ACCEPT_FILE: "accept file",
+  ACCEPTED_FILE: "accept file",
   BLOCKED: "blocked me",
   BLOCK: "block",
 

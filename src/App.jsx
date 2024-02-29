@@ -15,16 +15,40 @@ function App() {
   const [ sessionEnd, setSessionEnd ] = useState(false);
 
   useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      const msg = confirm('Are you sure you want to leave?');
+      event.returnValue = '';
+      if(msg) {
+        new contentSenderObject(socket, {
+            [consts.HEADER]:consts.END,
+            [consts.CONTENT]:consts.END,
+            [consts.ID]:consts.END,
+        }).sendContent();
+      }else {
+        return;
+      }
+      return '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
+
+  useEffect(() => {
     if(sessionEnd) {
       new contentSenderObject(socket, {
         [consts.HEADER]:consts.END,
         [consts.CONTENT]:consts.END,
         [consts.ID]:consts.END,
       }).sendContent();
-
-      setSocket(null);
-      setMessagesSocket(null);
+      document.querySelector('body').innerHTML = '<div> Session Ended </div>';
     }
+
   }, [sessionEnd]);
 
   if (sessionEnd) {

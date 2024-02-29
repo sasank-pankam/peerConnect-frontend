@@ -19,6 +19,7 @@ const blockedStyle = {
 
 // eslint-disable-next-line react/prop-types
 const UserChatContainer = ({id}) => {
+
     const {currentPositions, setCurrentPositions, blockedYou, youBlocked} = useContext(UsersContext);
     const {messagesSocket} = useWebSocket();
     const messageList = useSelector((state) => state.Users[id]) || [];
@@ -26,7 +27,12 @@ const UserChatContainer = ({id}) => {
     const scrollRef = useRef(0);
     // const [visible, setVisible] = useState(false);
 
+
     useEffect(() => {
+        if(messageList.length === 0) {
+            fetchMessages();
+        }
+
         if (divRef.current) {
             divRef.current.scrollTop = currentPositions.get(id) || 0;
         }
@@ -55,6 +61,8 @@ const UserChatContainer = ({id}) => {
             [consts.HEADER]: consts.LOAD_MESSAGES, [consts.ID]: id, [consts.CONTENT]: messageList.length,
         }).sendContent();
     }
+
+
     return (
         <div
             key={id}

@@ -3,7 +3,7 @@ import {useContext, useEffect} from "react";
 import Constants from "../Constants";
 import {contentSenderObject} from "../utils/ContentSenderObject";
 import {useWebSocket} from "../contexts/WebSocketContextProvider";
-import {appendMF, loadMessages} from "../app/MessagesSlice";
+import {appendMF, loadMessages, acceptedFile} from "../app/MessagesSlice";
 import {UsersContext} from "../contexts/UsersContextProvider";
 import {getMessage} from "./MessageBox";
 import {getFile} from "./FileBox";
@@ -42,6 +42,7 @@ function WebSocketHandler() {
             return newBlockedYou;
         });
     }
+
     const validateMessage = (message) => {
         const id = message[Constants.ID];
         const text = message[Constants.CONTENT];
@@ -56,6 +57,11 @@ function WebSocketHandler() {
             case Constants.FILE_RECEIVED:
                 dispach(
                     appendMF({newMessage: getFile({...text, isSender: false}), id}),
+                );
+                break;
+            case Constants.ACCEPTED_FILE:
+                dispach(
+                    acceptedFile({id, fileId: text})
                 );
                 break;
             case Constants.FILE_SENT:
