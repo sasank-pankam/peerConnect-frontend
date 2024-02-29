@@ -2,7 +2,7 @@ export default {
   NewUser: "newuser",
   UserLeft: "userleft",
   ActiveUser: "change-in-activeuser",
-
+  SYNC_USERS: "sync-users",
   IP: "127.0.0.1",
   ALT_IP: "127.0.0.5",
   PORT: 8765,
@@ -14,15 +14,15 @@ export default {
   COMMAND: "COMMAND",
     SUBHEADER: "SUBHEADER",
   NEW_CONNECTION: "connect user",
-  EXIT: "end programe",
-  FILE_POPUP: "file-popup",
-  DIRECTORY_POPUP: "directory-popup",
+  END: "end programe",
+
   LOAD_MESSAGES: "load messages",
-  ChangeUserName: "changeusername",
+  CHANGE_USER_NAME: "changeusername",
 
   NEW_MESSAGE: "this is a message",
 
-  NEW_FILE: "this is a file",
+  FILE_RECEIVED: "this is a file",
+  FILE_SENT: "file sent",
 
   BLOCKED: "blocked me",
   BLOCK: "block",

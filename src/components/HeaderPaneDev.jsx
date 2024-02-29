@@ -4,6 +4,7 @@ import { UsersContext } from "../contexts/UsersContextProvider";
 import { getMessage } from "./MessageBox";
 import { getFile } from "./FileBox";
 import { useDispatch } from "react-redux";
+import {useWebSocket} from "../contexts/WebSocketContextProvider.js";
 
 function HeaderPane() {
   const {
@@ -21,6 +22,8 @@ function HeaderPane() {
     setYouBlocked,
     setBlockedYou,
   } = useContext(UsersContext);
+
+  const {setSessionEnd} = useWebSocket();
   const reference = useRef(null);
   const dispach = useDispatch();
 
@@ -176,6 +179,7 @@ function HeaderPane() {
     <div className="details">
       <div className="title">Chat Application</div>
       <input type="number" name="" id="" ref={reference}/>
+      <button onClick={() => setSessionEnd(true)}> end </button>
       <button className="add-user" onClick={() => generateMessages(Number(reference.current.value))} >Generate Messages</button>
       <button className="add-user" onClick={() => generateFiles(Number(reference.current.value))} >Generate file</button>
       <button className="pin-user" onClick={() => pinUser(Number(reference.current.value))} >pin user</button>

@@ -8,8 +8,9 @@ export const UsersProvider = ({ children }) => {
   const userCounts = {};
   const timeStamps = {};
   const positions = new Map();
-  const renderebles = [];
-  for (let i = 0; i < 9; i++) {
+
+
+  for (let i = 0; i < 0; i++) {
     listOfusers.push({
       id: i,
     });
