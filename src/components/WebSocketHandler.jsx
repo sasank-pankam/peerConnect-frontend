@@ -22,15 +22,35 @@ function WebSocketHandler() {
     setOwner,
     renderebleUsers,
     setRenderebleUsers,
+      // blockedYou,
+      setBlockedYou,
   } = useContext(UsersContext);
   const { socket, setSocket, messagesSocket, setMessagesSocket } =
     useWebSocket();
-  const messageLists = useSelector((state) => state.Users) || [];
+  // const messageLists = useSelector((state) => state.Users) || [];
 
+  const blockedByUser = (id) => {
+    setBlockedYou(prev => {
+      const newBlockedYou = new Set(prev);
+        newBlockedYou.add(id);
+        return newBlockedYou;
+    });
+  };
+
+  const unBlockedByUser = (id) => {
+    setBlockedYou(prev => {
+      const newBlockedYou = new Set(prev);
+        newBlockedYou.delete(id);
+        return newBlockedYou;
+    });
+  }
   const validateMessage = (message) => {
-    const { id, message: text, HEADER } = message;
+    // const { id, CONTENT: text, HEADER } = message;
+    const id = message[Constants.ID];
+    const text = message[Constants.CONTENT];
+    const header = message[Constants.HEADER];
 
-    switch (HEADER) {
+    switch (header) {
       case Constants.InCommingMessage:
         dispach(
           appendMF({ newMessage: getMessage(text, { isSender: false }), id }),
@@ -58,6 +78,12 @@ function WebSocketHandler() {
       case Constants.ChangeUserName:
         setOwner(text);
         break;
+      case Constants.BLOCKED:
+        blockedByUser();
+        break;
+        case Constants.UNBLOCKED:
+            unBlockedByUser();
+            break;
       default:
         console.log("Invalid message");
     }
@@ -71,6 +97,7 @@ function WebSocketHandler() {
 
     newSocket.addEventListener("open", (event) => {
       console.log("WebSocket connection opened");
+
     });
 
     newSocket.addEventListener("message", (event) => {

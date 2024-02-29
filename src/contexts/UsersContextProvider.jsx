@@ -37,6 +37,8 @@ export const UsersProvider = ({ children }) => {
     id: null,
     position: { x: 0, y: 0 },
   });
+  const [youBlocked, setYouBlocked] = useState(new Set());
+  const [blockedYou, setBlockedYou] = useState(new Set());
 
   const escapeHandler = (event) => {
     if (
@@ -118,6 +120,12 @@ export const UsersProvider = ({ children }) => {
 
     isVisible,
     setIsVisible,
+
+    youBlocked,
+    setYouBlocked,
+
+    blockedYou,
+    setBlockedYou,
 
     addUser,
     removeUser,

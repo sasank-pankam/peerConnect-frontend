@@ -159,8 +159,26 @@ input {
   border-radius: 0.1rem;
   padding: 0.2rem;
   font-size: small;
-  /*display: none;*/
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
 }
+
+.context-menu > button {
+  background-color: rgba(128, 128, 128, 0.233);
+  border: none;
+  outline: none;
+  padding: 0.1rem;
+  cursor: pointer;
+  font-size: medium;
+}
+
+.context-menu > button:hover {
+    background-color: rgba(128, 128, 128);
+}
+
 .search {
   display: flex;
   justify-content: center;

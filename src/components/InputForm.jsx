@@ -13,11 +13,12 @@ import { parseMessage } from "../utils/actions";
 function InputForm() {
   const dispatch = useDispatch();
   const { socket } = useWebSocket();
-  // const [isBottom, setIsBottom] = useState(true);
-  const { currentActiveUser /* , counts, setCounts */ } =
+
+  const { currentActiveUser /* , counts, setCounts */ , blockedYou, youBlocked} =
     useContext(UsersContext);
-  // const [popUpType, setPopUpType] = useState(consts.NULL_TYPE);
+
   const inpRef = useRef(null);
+
   useEffect(() => {
     if (inpRef.current) {
       inpRef.current.value = "";
@@ -82,7 +83,7 @@ function InputForm() {
     ); // for appending message to chat container
     console.log("appending message");
   };
-
+  if (currentActiveUser === null || blockedYou.has(currentActiveUser) || youBlocked.has(currentActiveUser))  return <></>;
   return (
     <>
       <form
@@ -90,8 +91,9 @@ function InputForm() {
         className="input-wrapper"
         style={{
           // paddingLeft: "1rem",
-          display: currentActiveUser !== null ? "flex" : "none",
-        }}
+          // display: currentActiveUser !== null ? "flex" : "none",
+          display: 'flex',
+      }}
       >
         <div style={{ display: "flex", marginLeft: "1rem", gap: ".7rem" }}>
           <svg

@@ -6,7 +6,21 @@ import { getFile } from "./FileBox";
 import { useDispatch } from "react-redux";
 
 function HeaderPane() {
-  const { owner, currentActiveUser, userDetails, users, setUsers, setCounts, isPinned, addUser, removeUser, setIsPinned, setLatestTimeStampOfUserMessages } = useContext(UsersContext);
+  const {
+    owner,
+    currentActiveUser,
+    userDetails,
+    users,
+    setUsers,
+    setCounts,
+    // isPinned,
+    addUser,
+    removeUser,
+    setIsPinned,
+    setLatestTimeStampOfUserMessages,
+    setYouBlocked,
+    setBlockedYou,
+  } = useContext(UsersContext);
   const reference = useRef(null);
   const dispach = useDispatch();
 
@@ -106,13 +120,57 @@ function HeaderPane() {
     })
   }
 
-  
-  // useEffect(() => {
-  //   const element = document.getElementById(`chats-container-${currentActiveUser}`);
-  //   if(element) {
-  //     element.style.display = 'flex';
-  //   }
-  // },[currentActiveUser])
+  const blockedYou = (id) => {
+    console.log(`${id} Blocked you`);
+    if (id == null) {
+      console.log('Select a id first');
+      return;
+    }
+    setBlockedYou((prevBlocked) => {
+      const newBlocked = new Set(prevBlocked);
+      newBlocked.add(id);
+      return newBlocked;
+    });
+  }
+
+  const unBlockedYou = (id) => {
+    console.log(`${id} Unblocked you`);
+    if (id == null) {
+      console.log('Select a id first');
+      return;
+    }
+    setBlockedYou((prevBlocked) => {
+      const newBlocked = new Set(prevBlocked);
+      newBlocked.delete(id);
+      return newBlocked;
+    });
+  }
+
+  const youBlocked = (id) => {
+    console.log(`You blocked ${id}`);
+    if (id == null) {
+      console.log('Select a id first');
+      return;
+    }
+    setYouBlocked((prevBlocked) => {
+      const newBlocked = new Set(prevBlocked);
+      newBlocked.add(id);
+      return newBlocked;
+    });
+  }
+
+  const youUnblocked = (id) => {
+    console.log(`You unblocked ${id}`);
+    if (id == null) {
+      console.log('Select a id first');
+      return;
+    }
+    setYouBlocked((prevBlocked) => {
+      const newBlocked = new Set(prevBlocked);
+      newBlocked.delete(id);
+      return newBlocked;
+    });
+  }
 
   return (
     <div className="details">
@@ -124,6 +182,10 @@ function HeaderPane() {
       <button className="pin-user" onClick={() => unPinUser(Number(reference.current.value))} >unpin user</button>
       <button className="pin-user" onClick={() => addUser(Number(reference.current.value))} >add user</button>
       <button className="pin-user" onClick={() => removeUser(Number(reference.current.value))} >remove user</button>
+      <button className="pin-user" onClick={() => blockedYou(Number(reference.current.value))} >blocked you</button>
+      <button className="pin-user" onClick={() => unBlockedYou(Number(reference.current.value))} >unblocked you</button>
+      <button className="pin-user" onClick={() => youBlocked(Number(reference.current.value))} >you blocked</button>
+      <button className="pin-user" onClick={() => youUnblocked(Number(reference.current.value))} >you unblocked</button>
       <div className="username">{owner}</div>
       <div className="current-active-user">{userDetails[currentActiveUser] && userDetails[currentActiveUser].name || ''}</div>
       <button onClick={() => console.table(users)}> print users </button>

@@ -48,10 +48,12 @@ const UserBox = ({ id: uid, userName, isPinned }) => {
       className="user rounded-sm"
       id={uid}
       onClick={handleClick}
-      style={{
-        // backgroundColor:
-        //   counts[uid] > 0 ? "rgba(0, 0, 0, 0.4)" : "rgba(128, 128, 128, 0.233)",
-      }}
+      style={
+        {
+          // backgroundColor:
+          //   counts[uid] > 0 ? "rgba(0, 0, 0, 0.4)" : "rgba(128, 128, 128, 0.233)",
+        }
+      }
       onContextMenu={handleContextMenu}
       // onMouseDown={handleMouseDown}
     >
