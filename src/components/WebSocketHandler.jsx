@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import Constants from "../Constants";
 import {contentSenderObject} from "../utils/ContentSenderObject";
 import {useWebSocket} from "../contexts/WebSocketContextProvider";
@@ -7,12 +7,12 @@ import {appendMF, loadMessages, acceptedFile} from "../app/MessagesSlice";
 import {UsersContext} from "../contexts/UsersContextProvider";
 import {getMessage} from "./MessageBox";
 import {getFile} from "./FileBox";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 
 
-function WebSocketHandler() {
-    const dispach = useDispatch();
-
+export const useSocketWithHandler = (url, setSessionEnd) => {
+    const dispatch = useDispatch();
+    const [socket, setSocket] = useState(null);
     const {
         users,
         setOwner,
@@ -20,7 +20,6 @@ function WebSocketHandler() {
         addUser,
         removeUser,
     } = useContext(UsersContext);
-    const {socket, setSocket, messagesSocket, setMessagesSocket, setSessionEnd} = useWebSocket();
 
     const sessionEnded = () => {
         console.log("Session ended");
@@ -50,22 +49,22 @@ function WebSocketHandler() {
 
         switch (header) {
             case Constants.NEW_MESSAGE:
-                dispach(
+                dispatch(
                     appendMF({newMessage: getMessage(text, {isSender: false}), id}),
                 );
                 break;
             case Constants.FILE_RECEIVED:
-                dispach(
+                dispatch(
                     appendMF({newMessage: getFile({...text, isSender: false}), id}),
                 );
                 break;
             case Constants.ACCEPTED_FILE:
-                dispach(
+                dispatch(
                     acceptedFile({id, fileId: text})
                 );
                 break;
             case Constants.FILE_SENT:
-                dispach(
+                dispatch(
                     appendMF({newMessage: getFile({...text, isSender: true}), id}),
                 );
                 break;
@@ -75,10 +74,10 @@ function WebSocketHandler() {
             case Constants.UserLeft:
                 removeUser(id);
                 break;
-            case Constants.ClossingMessage:
+            case Constants.END:
                 sessionEnded();
                 break;
-            case Constants.ChangeUserName:
+            case Constants.CHANGE_USER_NAME:
                 setOwner(text);
                 break;
             case Constants.BLOCKED:
@@ -92,11 +91,9 @@ function WebSocketHandler() {
         }
     };
 
-    const validateMessageList = (message) => {
-        dispach(loadMessages(message));
-    };
+
     useEffect(() => {
-        const newSocket = new WebSocket(`ws://${Constants.IP}:${Constants.PORT}`);
+        const newSocket = new WebSocket(url);
 
         newSocket.addEventListener("open", (event) => {
             console.log("WebSocket connection opened");
@@ -130,10 +127,20 @@ function WebSocketHandler() {
         };
     }, []);
 
+
+    return [socket, setSocket];
+}
+
+
+export const useMessagingSocket = (url) => {
+    const [messageSocket, setMessageSocket] = useState(null);
+    const dispatch = useDispatch();
+
     useEffect(() => {
-        const newMessagesSocket = new WebSocket(
-            `ws://${Constants.IP}:${Constants.MESSAGES_PORT}`,
-        );
+        const validateMessageList = (message) => {
+            dispatch(loadMessages(message));
+        };
+        const newMessagesSocket = new WebSocket(url);
 
         newMessagesSocket.addEventListener("open", (event) => {
             console.log("Messages WebSocket connection opened");
@@ -145,7 +152,7 @@ function WebSocketHandler() {
             validateMessageList(message);
         });
 
-        setMessagesSocket(newMessagesSocket);
+        setMessageSocket(newMessagesSocket);
 
         return () => {
             console.log("Unmounting...");
@@ -158,32 +165,6 @@ function WebSocketHandler() {
             console.log("Closed messages WebSocket connection");
         };
     }, []);
-    // const addUser = (userName, id) => {
-    //   const newUsers = [...users];
-    //   const newRenderebles = [...renderebleUsers];
-    //   if (newUsers.findIndex((user) => user.id === id) !== -1) {
-    //     // console.log("User already exists");
-    //     return;
-    //   }
-    //   const newUser = { userName: userName, id: id };
-    //   newUsers.push(newUser);
-    //   newRenderebles.push(id);
-    //   setUsers(newUsers);
-    //   setRenderebleUsers(newRenderebles);
-    // };
-    //
-    // const removeUser = (id) => {
-    //   const newUsers = [...users];
-    //   const index = newUsers.findIndex((user) => user.id === id);
-    //   if (index == -1) {
-    //     // console.log("User does not exists");
-    //     return;
-    //   }
-    //   newUsers.splice(index, 1);
-    //   setUsers(newUsers);
-    // };
 
-    return <></>;
+    return [messageSocket, setMessageSocket];
 }
-
-export default WebSocketHandler;

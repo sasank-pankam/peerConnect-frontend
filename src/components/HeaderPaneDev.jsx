@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useRef } from "react";
 import { appendMF } from "../app/MessagesSlice";
 import { UsersContext } from "../contexts/UsersContextProvider";
 import { getMessage } from "./MessageBox";

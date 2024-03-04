@@ -23,6 +23,8 @@ export default {
 
   FILE_RECEIVED: "this is a file",
   FILE_SENT: "file sent",
+  SEND_FILE:"send file",
+  SEND_DIRECTORY:"send dir",
 
   ACCEPT_FILE: "accept file",
   ACCEPTED_FILE: "accept file",

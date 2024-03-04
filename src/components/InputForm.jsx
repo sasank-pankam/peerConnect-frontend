@@ -11,32 +11,40 @@ import {parseMessage} from "../utils/actions";
 
 // import FolderIcon from '@mui/icons-material/Folder';
 
-function InputForm() {
+const useCleanInput = (inpRef, currentActiveUser, setIsSent) => {
+    useEffect(() => {
+        setIsSent(false);
+        if (inpRef.current) {
+            inpRef.current.value = "";
+        }
+    }, [currentActiveUser, inpRef]);
+}
+
+const InputForm = () =>  {
     const dispatch = useDispatch();
     const {socket} = useWebSocket();
+    const [isSent, setIsSent] = useState(false);
 
     const {currentActiveUser /* , counts, setCounts */, blockedYou, youBlocked} =
         useContext(UsersContext);
 
     const inpRef = useRef(null);
 
-    useEffect(() => {
-        if (inpRef.current) {
-            inpRef.current.value = "";
-        }
-    }, [currentActiveUser]);
+    useCleanInput(inpRef, currentActiveUser, setIsSent);
 
-    const sendDirectory = (event) => {
+    const triggerDirectoryChange = (event) => {
+        event.preventDefault();
         new contentSenderObject(socket, {
             [consts.HEADER]: consts.COMMAND,
-            [consts.CONTENT]: consts.DIRECTORY_POPUP,
+            [consts.CONTENT]: consts.SEND_FILE,
             [consts.ID]: currentActiveUser,
         }).sendContent();
     };
-    const sendFile = (event) => {
+    const triggerSendFile = (event) => {
+        event.preventDefault();
         new contentSenderObject(socket, {
             [consts.HEADER]: consts.COMMAND,
-            [consts.CONTENT]: consts.FILE_POPUP,
+            [consts.CONTENT]: consts.SEND_FILE,
             [consts.ID]: currentActiveUser,
         }).sendContent();
     };
@@ -46,9 +54,7 @@ function InputForm() {
         let message = String(event.target[0].value);
         event.target[0].value = "";
         if (message === "") return;
-        console.log(message);
         if (message.length > 6 && message.substring(0, 6) === "file::") {
-            console.log("sending file");
             new contentSenderObject(socket, {
                 [consts.HEADER]: consts.NEW_FILE,
                 [consts.CONTENT]: message.substring(6),
@@ -85,25 +91,23 @@ function InputForm() {
         ); // for appending message to chat container
         console.log("appending message");
     };
+
     if (currentActiveUser === null || blockedYou.has(currentActiveUser) || youBlocked.has(currentActiveUser)) return <></>;
+    
     return (
         <>
             <form
                 onSubmit={handleSubmit}
                 className="input-wrapper"
                 style={{
-                    // paddingLeft: "1rem",
-                    // display: currentActiveUser !== null ? "flex" : "none",
                     display: 'flex',
                 }}
             >
                 <div style={{display: "flex", marginLeft: "1rem", gap: ".7rem"}}>
                     <svg
-                        onClick={sendFile}
+                        onClick={triggerSendFile}
                         height="20"
                         width="16"
-                        // viewBox="0 0 16 20"
-                        // fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <path
@@ -115,7 +119,7 @@ function InputForm() {
                     </svg>
 
                     <svg
-                        onClick={sendDirectory}
+                        onClick={triggerDirectoryChange}
                         className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-m9simb"
                         focusable="false"
                         aria-hidden="true"
@@ -130,11 +134,13 @@ function InputForm() {
                 </div>
                 <input
                     onFocus={() => {
+                        if(isSent) return;
                         new contentSenderObject(socket, {
                             [consts.HEADER]: consts.ActiveUser,
                             [consts.CONTENT]: "",
                             [consts.ID]: currentActiveUser,
                         }).sendContent();
+                        setIsSent(true);
                     }}
                     ref={inpRef}
                     type="text"
