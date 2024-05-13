@@ -5,7 +5,7 @@ import { UsersContext } from "../contexts/UsersContextProvider";
 
 function HeaderPane() {
   const { owner, currentActiveUser, userDetails } = useContext(UsersContext);
-  
+
   // useEffect(() => {
   //   new contentSenderObject({
   //     [consts.HEADER] : consts.ActiveUser,
@@ -16,8 +16,10 @@ function HeaderPane() {
 
   return (
     <div className="header-container">
-      <div className="my-user-name">{owner}</div>
-      <div className="current-username">{ currentActiveUser !== null && userDetails[currentActiveUser].name}</div>
+      <div className="my-user-name">{owner.owner}</div>
+      <div className="current-username">
+        {currentActiveUser !== null && userDetails[currentActiveUser].name}
+      </div>
     </div>
   );
 }

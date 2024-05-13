@@ -53,7 +53,8 @@
 }
 .message {
   background: rgba(128, 128, 128, 0.233);
-  width: fit-content;
+  max-width: 65%;
+  overflow-wrap: break-word;
   border-radius: 0.25rem;
   padding: 0.4rem;
   margin: 0.3rem;
@@ -133,7 +134,7 @@ input {
   display: flex;
   justify-content: space-between;
 }
-.user:hover{
+.user:hover {
   background-color: rgba(128, 128, 128, 0.5);
 }
 .user:nth-last-of-type(1) {
@@ -176,7 +177,7 @@ input {
 }
 
 .context-menu > button:hover {
-    background-color: rgba(128, 128, 128);
+  background-color: rgba(128, 128, 128);
 }
 
 .search {
@@ -192,17 +193,18 @@ input {
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  height: fit-content;
-  background-color: rgba(77, 71, 71, 0.629);
+  height: 4rem;
+  /* padding: 0 0.3rem 0 0; */
+  /* background-color: rgba(77, 71, 71, 0.629); */
 }
 
 .message-input {
-  width: 100%;
-  height: 85%;
+  width: 90%;
+  height: 90%;
   /* position: fixed; */
   margin-left: 0.4rem;
   border-radius: 0.3rem;
-  padding: 0.2rem;
+  padding: 0 0 0 0.5rem;
   border: none;
   outline: none;
 }
@@ -214,6 +216,7 @@ input {
   border: none;
   outline: none;
   cursor: pointer;
+  width: 4rem !important;
 }
 .time {
   font-size: 0.6rem;
@@ -259,9 +262,9 @@ input {
 }
 .file-name-container {
   display: flex;
-    justify-content: space-between;
-    align-items: center;
-  gap: .5rem;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.3rem;
 }
 
@@ -307,4 +310,49 @@ a {
 
 a:hover {
   color: rgb(79, 79, 1);
+}
+
+.edit {
+  opacity: 0;
+}
+
+.profile-card,
+.profile-card > div:first-child {
+  /* border: 2px solid black; */
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-card {
+  padding: 2rem;
+  padding-bottom: 1rem;
+}
+.profile-card > div:first-child {
+  gap: 1rem;
+}
+.profile-card > div > p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.profile-card > div > p > input {
+  border: 1px solid black;
+  border-radius: 6%;
+  padding: 0 0.1rem;
+  outline: 0;
+  width: 6rem;
+}
+.profile-card:hover > div > button {
+  opacity: 1;
+}
+
+p label:first-child {
+  font-weight: bolder;
+}
+.profiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }

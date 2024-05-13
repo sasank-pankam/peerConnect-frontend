@@ -5,7 +5,7 @@ const MessageBox = ({ Message }) => {
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
   now = null;
-  const final_content = `<div class="message-content">${content}<span class="time">${currentHour}:${currentMinute}</span></div>`
+  const final_content = `<div class="message-content">${content}<span class="time">${currentHour}:${currentMinute}</span></div>`;
   return (
     <div
       style={{
@@ -14,9 +14,10 @@ const MessageBox = ({ Message }) => {
         justifyContent: isSender ? "flex-end" : "flex-start",
       }}
     >
-      <div className="message" dangerouslySetInnerHTML={{__html:final_content}}>
-
-      </div>
+      <div
+        className="message"
+        dangerouslySetInnerHTML={{ __html: final_content }}
+      ></div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { useContext, useMemo, useState, useRef } from "react";
 import UserBox from "./UserBox";
 import { UsersContext } from "../contexts/UsersContextProvider";
-import Search from "./../assets/search.svg";
+import Search from "../assets/search.jsx";
 import {
   List,
   AutoSizer,
@@ -66,7 +66,12 @@ const ActiveMembers = () => {
 
   return (
     <>
-      <div className="user scrollbar-dummy">
+      <div
+        className="user  scrollbar-dummy"
+        style={{
+          background: "transparent",
+        }}
+      >
         <input
           type="text"
           className="user rounded-md pb-0"
@@ -81,7 +86,8 @@ const ActiveMembers = () => {
             inputRef.current.focus();
           }}
         >
-          <img src={Search} />
+          {/* <img src={Search} /> */}
+          <Search />
         </div>
       </div>
       <div className="activemembers">
