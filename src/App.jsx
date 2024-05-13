@@ -9,6 +9,7 @@ import consts from "./Constants";
 import "./App.css";
 import ProfileWrapper from "./components/ProfileWrapper.jsx";
 import useClick from "./utils/useClick.js";
+import useGetProfiles from "./utils/manageProfiles.js";
 
 const useSessionEnd = () => {
   const [sessionEnd, setSessionEnd] = useState(false);
@@ -44,8 +45,9 @@ const App = () => {
     `ws://${consts.IP}:${consts.MESSAGES_PORT}`,
   );
 
-  const [clicked, setClicked] = useClick();
-  console.log(clicked);
+  const [profiles, setProfiles] = useGetProfiles(socket);
+  const [clicked, setClicked] = useClick(profiles);
+  // console.log(clicked);
   if (sessionEnd) {
     return <div>Session Ended</div>;
   }
@@ -59,7 +61,15 @@ const App = () => {
         setSessionEnd,
       }}
     >
-      {clicked ? <ChatApp /> : <ProfileWrapper setClicked={setClicked} />}
+      {clicked ? (
+        <ChatApp />
+      ) : (
+        <ProfileWrapper
+          profiles={profiles}
+          setProfiles={setProfiles}
+          setClicked={setClicked}
+        />
+      )}
     </WebSocketContextProvider>
   );
 };
