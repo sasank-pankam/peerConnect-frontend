@@ -13,6 +13,7 @@ function HeaderPane() {
   //     [consts.ID] : currentActiveUser
   //   }).sendContent();
   // },[currentActiveUser])
+  console.log("owner: ", owner);
 
   return (
     <div className="header-container">
