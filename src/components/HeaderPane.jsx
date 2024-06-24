@@ -7,17 +7,17 @@ function HeaderPane() {
   const { owner, currentActiveUser, userDetails } = useContext(UsersContext);
 
   // useEffect(() => {
-  //   new contentSenderObject({
-  //     [consts.HEADER] : consts.ActiveUser,
-  //     [consts.CONTENT] : '',
-  //     [consts.ID] : currentActiveUser
-  //   }).sendContent();
+  // new contentSenderObject(
+  //   consts.ActiveUser,
+  //   "",
+  //   currentActiveUser,
+  // ).sendContent();
   // },[currentActiveUser])
-  console.log("owner: ", owner);
+  // console.log("owner: ", owner);
 
   return (
     <div className="header-container">
-      <div className="my-user-name">{owner.owner}</div>
+      <div className="my-user-name">{owner.USER.name}</div>
       <div className="current-username">
         {currentActiveUser !== null && userDetails[currentActiveUser].name}
       </div>

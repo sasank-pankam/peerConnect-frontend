@@ -18,7 +18,7 @@ export const UsersProvider = ({ children }) => {
   const timeStamps = {};
   const positions = new Map();
 
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 99; i++) {
     listOfusers.push({
       id: i,
     });

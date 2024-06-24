@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { motion } from "framer-motion"; // Assuming you're using Framer Motion for animations
 import { UsersContext } from "../contexts/UsersContextProvider";
 
 // eslint-disable-next-line react/prop-types
@@ -36,24 +35,10 @@ const UserBox = ({ id: uid, userName, isPinned }) => {
   //   setMenuVisible(false);
   // };
   return (
-    <motion.div
-      initial={{ opacity: 0, transform: "translateY(-1rem)" }}
-      animate={{ opacity: 1, transform: "translateY(0rem)" }}
-      exit={{
-        opacity: 0,
-        backgroundColor: "black",
-        transform: "translateY(-1rem)",
-        transition: { duration: 10 },
-      }}
+    <div
       className="user rounded-sm"
       id={uid}
       onClick={handleClick}
-      style={
-        {
-          // backgroundColor:
-          //   counts[uid] > 0 ? "rgba(0, 0, 0, 0.4)" : "rgba(128, 128, 128, 0.233)",
-        }
-      }
       onContextMenu={handleContextMenu}
       // onMouseDown={handleMouseDown}
     >
@@ -112,7 +97,7 @@ const UserBox = ({ id: uid, userName, isPinned }) => {
           </button>
         </div>
       )} */}
-    </motion.div>
+    </div>
   );
 };
 

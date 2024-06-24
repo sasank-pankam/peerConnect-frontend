@@ -3,16 +3,17 @@ export default {
   UserLeft: "userleft",
   ActiveUser: "change-in-activeuser",
   SYNC_USERS: "sync-users",
-  IP: "172.16.197.166",
+  // IP: "172.16.197.166",
+  IP: "127.0.0.1",
   ALT_IP: "127.0.0.5",
-  PORT: 42055,
-  MESSAGES_PORT: 8766,
+  PORT: 10001,
+  MESSAGES_PORT: 10000,
   HEADER: "HEADER",
   CONTENT: "CONTENT",
   ID: "ID",
 
   COMMAND: "COMMAND",
-    SUBHEADER: "SUBHEADER",
+  SUBHEADER: "SUBHEADER",
   NEW_CONNECTION: "connect user",
   END: "end programe",
 
@@ -23,8 +24,8 @@ export default {
 
   FILE_RECEIVED: "this is a file",
   FILE_SENT: "file sent",
-  SEND_FILE:"send file",
-  SEND_DIRECTORY:"send dir",
+  SEND_FILE: "send file",
+  SEND_DIRECTORY: "send dir",
 
   ACCEPT_FILE: "accept file",
   ACCEPTED_FILE: "accept file",

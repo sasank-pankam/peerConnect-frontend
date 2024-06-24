@@ -34,33 +34,16 @@ const EndSession = (sessionEnd, socket) => {
   }, [sessionEnd, socket]);
 };
 
-const App = () => {
-  const [sessionEnd, setSessionEnd] = useSessionEnd();
-  const [socket, setSocket] = useSocketWithHandler(
-    `ws://${consts.IP}:${consts.PORT}`,
-    setSessionEnd,
-  );
-  EndSession(sessionEnd, socket);
-  const [messagesSocket, setMessagesSocket] = useMessagingSocket(
-    `ws://${consts.IP}:${consts.MESSAGES_PORT}`,
-  );
-
-  const [profiles, setProfiles] = useGetProfiles(socket);
-  const [clicked, setClicked] = useClick(profiles);
+const LoadProfiles = ({ signalSocket, sessionEnd }) => {
+  const [profiles, setProfiles] = useGetProfiles(signalSocket);
+  const [selectedProfile, setSelectedProfile] = useState("");
+  const [clicked, setClicked] = useClick(profiles, setSelectedProfile);
   // console.log(clicked);
   if (sessionEnd) {
     return <div>Session Ended</div>;
   }
   return (
-    <WebSocketContextProvider
-      value={{
-        socket,
-        setSocket,
-        messagesSocket,
-        setMessagesSocket,
-        setSessionEnd,
-      }}
-    >
+    <>
       {clicked ? (
         <ChatApp />
       ) : (
@@ -68,8 +51,46 @@ const App = () => {
           profiles={profiles}
           setProfiles={setProfiles}
           setClicked={setClicked}
+          selectedProfile={selectedProfile}
+          setSelectedProfile={setSelectedProfile}
         />
       )}
+    </>
+  );
+};
+
+const reloadTime = () => {
+  const prev = Number(localStorage.getItem("time"));
+  return prev - Date.now();
+};
+
+const App = () => {
+  window.addEventListener("beforeunload", () => {
+    localStorage.setItem("time", Date.now());
+    return true;
+  });
+  const [sessionEnd, setSessionEnd] = useSessionEnd();
+  const [socket, setSocket] = useSocketWithHandler(
+    `ws://${consts.IP}:${consts.PORT}`,
+    setSessionEnd,
+  );
+  EndSession(sessionEnd, socket);
+  const [signalsSocket, setSignalsSocket] = useSocketWithHandler(
+    `ws://${consts.IP}:${consts.MESSAGES_PORT}`,
+    setSessionEnd,
+  );
+
+  return (
+    <WebSocketContextProvider
+      value={{
+        socket,
+        setSocket,
+        signalsSocket,
+        setSignalsSocket,
+        setSessionEnd,
+      }}
+    >
+      <LoadProfiles signalSocket={signalsSocket} sessionEnd={sessionEnd} />
     </WebSocketContextProvider>
   );
 };

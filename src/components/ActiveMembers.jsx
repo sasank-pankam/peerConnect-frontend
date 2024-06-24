@@ -2,22 +2,24 @@ import { useContext, useMemo, useState, useRef } from "react";
 import UserBox from "./UserBox";
 import { UsersContext } from "../contexts/UsersContextProvider";
 import Search from "../assets/search.jsx";
-import {
-  List,
-  AutoSizer,
-  CellMeasurer,
-  CellMeasurerCache,
-} from "react-virtualized";
+// import {
+//   List,
+//   AutoSizer,
+//   CellMeasurer,
+//   CellMeasurerCache,
+// } from "react-virtualized";
+
+import { FixedSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 
 const ActiveMembers = () => {
-  // console.log(Search);
-  // autoSizer stuff
-  const cache = useRef(
-    new CellMeasurerCache({
-      fixedWidth: true,
-      defaultHeight: 45,
-    }),
-  );
+  // // autoSizer stuff
+  // const cache = useRef(
+  //   new CellMeasurerCache({
+  //     fixedWidth: true,
+  //     defaultHeight: 45,
+  //   }),
+  // );
 
   // needed states
   const [searchValue, setSearchValue] = useState("");
@@ -45,16 +47,13 @@ const ActiveMembers = () => {
         .includes(searchValue.toLowerCase());
     });
   }, [searchValue, users]);
-  // console.log('user Details : ', userDetails);
-  // console.log('filtered users : ', filteredUsers);
-  // sort users based on pinned status
+
   const pinnedUsers = filteredUsers
     .filter(({ id }) => isPinned.get(id))
     .sort((a, b) => {
       return isPinned.get(b.id) - isPinned.get(a.id);
     });
-  // console.log('pinned users : ', pinnedUsers);
-  // final sorted users pinned on top of unpinned users
+
   const sortedUsers = [
     ...pinnedUsers,
     ...filteredUsers.filter(
@@ -92,6 +91,42 @@ const ActiveMembers = () => {
       </div>
       <div className="activemembers">
         <AutoSizer>
+          {({ height, width }) => {
+            return (
+              <List
+                height={height}
+                width={width}
+                itemCount={sortedUsers.length}
+                itemSize={50}
+              >
+                {({ index, style }) => {
+                  const { id } = sortedUsers[index];
+                  return (
+                    <div style={style}>
+                      <UserBox
+                        id={id}
+                        key={index}
+                        isPinned={isPinned.get(id)}
+                        style={style}
+                        userName={userDetails[id].name}
+                      />
+                    </div>
+                  );
+                }}
+              </List>
+            );
+          }}
+        </AutoSizer>
+      </div>
+    </>
+  );
+};
+
+export default ActiveMembers;
+
+/*
+ 
+        <AutoSizer>
           {({ width, height }) => {
             return (
               <List
@@ -126,12 +161,9 @@ const ActiveMembers = () => {
             );
           }}
         </AutoSizer>
-      </div>
-    </>
-  );
-};
 
-export default ActiveMembers;
+
+*/
 
 // const ActiveMembers = () => {
 //   const cache = useRef(

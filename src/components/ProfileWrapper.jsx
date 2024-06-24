@@ -10,13 +10,16 @@ const configOptions = ["Ip", "Name", "Port"];
 const configSanitizer = {
   ["Ip"]: (ip) => {
     return ipv4Pattern.test(ip) || ipv6Pattern.test(ip);
+    // return true;
   },
   ["Name"]: (name) => {
     return !(name.length === 0);
+    // return true;
   },
   ["Port"]: (port) => {
     port = Number(port);
     return 0 <= port && port <= 65535;
+    // return true;
   },
 };
 
@@ -37,10 +40,22 @@ const askProfile = () => {
   }
 };
 
+const userThings = ["name"];
+const serverThings = ["ip", "port"];
+
 const askAndAddProfile = (setProfiles) => {
   const profile = askProfile();
+  // console.log(profile);
   if (!profile) return;
-  setProfiles((prev) => [...prev, profile]);
+  setProfiles((prev) => ({
+    ...prev,
+    [`${profile.name}`]: {
+      USER: Object.fromEntries(userThings.map((item) => [item, profile[item]])),
+      SERVER: Object.fromEntries(
+        serverThings.map((item) => [item, profile[item]]),
+      ),
+    },
+  }));
 };
 
 const askAndRemoveProfile = (selectedProfile, setProfiles) => {
@@ -48,34 +63,46 @@ const askAndRemoveProfile = (selectedProfile, setProfiles) => {
     alert("select a profile");
     return;
   }
-  const index = selectedProfile - 1;
+  // const index = selectedProfile - 1;
+  // setProfiles((prev) => {
+  //   return prev.filter((_, ind) => {
+  //     return !(ind === index);
+  //   });
+  // });
   setProfiles((prev) => {
-    return prev.filter((_, ind) => {
-      return !(ind === index);
-    });
+    const newProfiles = { ...prev };
+    delete newProfiles[selectedProfile];
+    return newProfiles;
   });
 };
 
-const ProfileWrapper = ({ setClicked, profiles = [], setProfiles }) => {
-  const [selectedProfile, setSelectedProfile] = useState(0);
+const ProfileWrapper = ({
+  setClicked,
+  profiles = [],
+  setProfiles,
+  selectedProfile,
+  setSelectedProfile,
+}) => {
   return (
     <div className="profiles-contianer flex flex-col gap-10 justify-center items-center">
       <div className="profiles flex gap-10">
-        {profiles?.map((profile, index) => (
-          <Profile
-            setProfiles={setProfiles}
-            index={index}
-            profile={profile}
-            onClick={() => {
-              setSelectedProfile((prev) => {
-                if (prev === index + 1) return 0;
-                return index + 1;
-              });
-            }}
-            key={index}
-            selectedProfile={selectedProfile === index + 1}
-          />
-        ))}
+        {profiles &&
+          Object.keys(profiles).map((profileName, index) => (
+            <Profile
+              setProfiles={setProfiles}
+              profiles={profiles}
+              index={index}
+              profileName={profileName}
+              onClick={() => {
+                setSelectedProfile((prev) => {
+                  if (prev === profileName) return 0;
+                  return profileName;
+                });
+              }}
+              key={index}
+              selectedProfile={selectedProfile === profileName}
+            />
+          ))}
       </div>
       <div className="w-full flex flex-col gap-4 justify-center items-center h-full">
         <div className="profile-controls flex gap-10 justify-center items-center">
@@ -88,7 +115,7 @@ const ProfileWrapper = ({ setClicked, profiles = [], setProfiles }) => {
           <div
             onClick={() => {
               askAndRemoveProfile(selectedProfile, setProfiles);
-              setSelectedProfile(0);
+              setSelectedProfile("");
             }}
             className="remove cursor-pointer"
           >

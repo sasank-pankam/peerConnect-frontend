@@ -1,8 +1,16 @@
 import { useState } from "react";
 
-const Profile = ({ profile, selectedProfile, onClick, setProfiles, index }) => {
+const Profile = ({
+  profileName,
+  selectedProfile,
+  profiles,
+  onClick,
+  setProfiles,
+  index,
+}) => {
   // const { profNum } = profile;
   const [edit, setEdit] = useState(false);
+  const profile = profiles[profileName];
   return (
     <div
       onClick={onClick}
@@ -27,7 +35,7 @@ const Profile = ({ profile, selectedProfile, onClick, setProfiles, index }) => {
               <input
                 className="bg-transparent "
                 name="name"
-                defaultValue={profile.owner}
+                defaultValue={profile.USER.name}
               />
             </p>
             <p>
@@ -35,7 +43,7 @@ const Profile = ({ profile, selectedProfile, onClick, setProfiles, index }) => {
               <input
                 name="ip"
                 className="bg-transparent "
-                defaultValue={profile.confs.ip}
+                defaultValue={profile.SERVER.ip}
               />
             </p>
             <p>
@@ -43,7 +51,7 @@ const Profile = ({ profile, selectedProfile, onClick, setProfiles, index }) => {
               <input
                 name="port"
                 className="bg-transparent "
-                defaultValue={profile.confs.port}
+                defaultValue={profile.SERVER.port}
               />
             </p>
           </div>
@@ -65,15 +73,15 @@ const Profile = ({ profile, selectedProfile, onClick, setProfiles, index }) => {
                 const ip = document.getElementsByName("ip")[0].value;
                 const port = document.getElementsByName("port")[0].value;
 
-                const newProfile = { ...profile };
-                newProfile.changed = name;
-                newProfile.confs.ip = ip;
-                newProfile.confs.port = port;
+                profile.USER.name = name;
+                profile.SERVER.ip = ip;
+                profile.SERVER.port = port;
 
                 setProfiles((prev) => {
-                  const newProfiles = [...prev];
-                  newProfiles[index] = newProfile;
-                  return newProfiles;
+                  // const newProfiles = [...prev];
+                  // newProfiles[index] = newProfile;
+                  // return newProfiles;
+                  return { ...prev };
                 });
                 setEdit(false);
               }}
@@ -92,13 +100,20 @@ const Profile = ({ profile, selectedProfile, onClick, setProfiles, index }) => {
         >
           <div>
             <p>
-              <label>Visible Name:</label> <label>{profile.changed}</label>
+              <label>Visible Name:</label> <label>{profile.USER.name}</label>
             </p>
             <p>
-              <label>Server Ip:</label> <label>{profile.confs.ip}</label>
+              <label>Server Ip:</label>{" "}
+              <label
+                style={{
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {profile.SERVER.ip}
+              </label>
             </p>
             <p>
-              <label>Server Port:</label> <label>{profile.confs.port}</label>
+              <label>Server Port:</label> <label>{profile.SERVER.port}</label>
             </p>
           </div>
           <div

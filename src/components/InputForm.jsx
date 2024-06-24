@@ -37,19 +37,21 @@ const InputForm = () => {
 
   const triggerDirectoryChange = (event) => {
     event.preventDefault();
-    new contentSenderObject(socket, {
-      [consts.HEADER]: consts.COMMAND,
-      [consts.CONTENT]: consts.SEND_FILE,
-      [consts.ID]: currentActiveUser,
-    }).sendContent();
+    new contentSenderObject(
+      socket,
+      consts.COMMAND,
+      consts.SEND_FILE,
+      currentActiveUser,
+    ).sendContent();
   };
   const triggerSendFile = (event) => {
     event.preventDefault();
-    new contentSenderObject(socket, {
-      [consts.HEADER]: consts.COMMAND,
-      [consts.CONTENT]: consts.SEND_FILE,
-      [consts.ID]: currentActiveUser,
-    }).sendContent();
+    new contentSenderObject(
+      socket,
+      consts.COMMAND,
+      consts.SEND_FILE,
+      currentActiveUser,
+    ).sendContent();
   };
 
   const handleSubmit = (event) => {
@@ -58,11 +60,12 @@ const InputForm = () => {
     event.target[0].value = "";
     if (message === "") return;
     if (message.length > 6 && message.substring(0, 6) === "file::") {
-      new contentSenderObject(socket, {
-        [consts.HEADER]: consts.NEW_FILE,
-        [consts.CONTENT]: message.substring(6),
-        [consts.ID]: currentActiveUser,
-      }).sendContent();
+      new contentSenderObject(
+        socket,
+        consts.NEW_FILE,
+        message.substring(6),
+        currentActiveUser,
+      ).sendContent();
       // dispatch(
       //     appendMF({
       //         newMessage: getFile({
@@ -79,11 +82,12 @@ const InputForm = () => {
       return;
     }
     message = parseMessage(message);
-    new contentSenderObject(socket, {
-      [consts.HEADER]: consts.NEW_MESSAGE,
-      [consts.CONTENT]: message,
-      [consts.ID]: currentActiveUser,
-    }).sendContent();
+    new contentSenderObject(
+      socket,
+      consts.NEW_MESSAGE,
+      message,
+      currentActiveUser,
+    ).sendContent();
 
     // console.log("sent message");
     dispatch(
@@ -142,11 +146,12 @@ const InputForm = () => {
         <input
           onFocus={() => {
             if (isSent) return;
-            new contentSenderObject(socket, {
-              [consts.HEADER]: consts.ActiveUser,
-              [consts.CONTENT]: "",
-              [consts.ID]: currentActiveUser,
-            }).sendContent();
+            new contentSenderObject(
+              socket,
+              consts.ActiveUser,
+              "",
+              currentActiveUser,
+            ).sendContent();
             setIsSent(true);
           }}
           ref={inpRef}

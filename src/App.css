@@ -333,6 +333,7 @@ a:hover {
 .profile-card > div > p {
   display: flex;
   justify-content: space-between;
+  /* text-overflow: ellipsis; */
   align-items: center;
   gap: 1rem;
 }
