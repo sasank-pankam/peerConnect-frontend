@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Profile from "./Profile.jsx";
+import { getRandom255BitNumber } from "../utils/randomNumbers.js";
 
 const ipv4Pattern =
   /^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/gm;
@@ -25,37 +26,45 @@ const configSanitizer = {
 
 const askProfile = () => {
   try {
-    return Object.fromEntries(
-      Array.from(configOptions, (config) => {
-        const inp = prompt(`Enter ${config} :`);
-        if (!configSanitizer[config](inp)) {
-          alert(`Invalid input for ${config}`);
-          throw new Error("Sanitization error");
-        }
-        return [config.toLowerCase(), inp];
-      }),
-    );
+    return {
+      ...Object.fromEntries(
+        Array.from(configOptions, (config) => {
+          const inp = prompt(`Enter ${config} :`);
+          if (!configSanitizer[config](inp)) {
+            alert(`Invalid input for ${config}`);
+            throw new Error("Sanitization error");
+          }
+          return [config.toLowerCase(), inp];
+        }),
+      ),
+      id: getRandom255BitNumber(),
+    };
   } catch (_) {
     return null;
   }
 };
 
-const userThings = ["name"];
+const userThings = ["name", "id"];
 const serverThings = ["ip", "port"];
 
 const askAndAddProfile = (setProfiles) => {
   const profile = askProfile();
   // console.log(profile);
   if (!profile) return;
-  setProfiles((prev) => ({
-    ...prev,
-    [`${profile.name}`]: {
-      USER: Object.fromEntries(userThings.map((item) => [item, profile[item]])),
-      SERVER: Object.fromEntries(
-        serverThings.map((item) => [item, profile[item]]),
-      ),
+  setProfiles((prev) => [
+    prev[0],
+    {
+      ...prev[1],
+      [`${Date.now()}`]: {
+        USER: Object.fromEntries(
+          userThings.map((item) => [item, profile[item]]),
+        ),
+        SERVER: Object.fromEntries(
+          serverThings.map((item) => [item, profile[item]]),
+        ),
+      },
     },
-  }));
+  ]);
 };
 
 const askAndRemoveProfile = (selectedProfile, setProfiles) => {
@@ -70,19 +79,18 @@ const askAndRemoveProfile = (selectedProfile, setProfiles) => {
   //   });
   // });
   setProfiles((prev) => {
-    const newProfiles = { ...prev };
+    const newProfiles = { ...prev[1] };
     delete newProfiles[selectedProfile];
-    return newProfiles;
+    return [prev[0], newProfiles];
   });
 };
 
-const ProfileWrapper = ({
-  setClicked,
-  profiles = [],
-  setProfiles,
-  selectedProfile,
-  setSelectedProfile,
-}) => {
+/**
+ * @param {Function} setClicked
+ * @param {Array} profiles
+ * @param {() => void} setProfiles
+ */
+const ProfileWrapper = ({ setClicked, profiles = [], setProfiles }) => {
   return (
     <div className="profiles-contianer flex flex-col gap-10 justify-center items-center">
       <div className="profiles flex gap-10">
@@ -90,17 +98,26 @@ const ProfileWrapper = ({
           Object.keys(profiles).map((profileName, index) => (
             <Profile
               setProfiles={setProfiles}
-              profiles={profiles}
-              index={index}
+              profile={profiles[profileName]}
               profileName={profileName}
               onClick={() => {
-                setSelectedProfile((prev) => {
-                  if (prev === profileName) return 0;
-                  return profileName;
+                setProfiles((prev) => {
+                  const prevProfiles = prev[1];
+                  return [
+                    prev[0],
+                    {
+                      // :TODO: need to make the selected variable false for other users using for loop
+                      // or make a new state for the selection
+                      ...prevProfiles,
+                      [profileName]: {
+                        ...prevProfiles[profileName],
+                        selected: true,
+                      },
+                    },
+                  ];
                 });
               }}
               key={index}
-              selectedProfile={selectedProfile === profileName}
             />
           ))}
       </div>
@@ -126,7 +143,7 @@ const ProfileWrapper = ({
           <div
             className="flex justify-center items-center px-5 py-2 bg-gray-300 rounded-2xl w-fit cursor-pointer"
             onClick={() => {
-              if (selectedProfile === 0) {
+              if (!selectedProfile) {
                 alert("select a profile");
                 return;
               }

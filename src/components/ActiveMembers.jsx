@@ -1,29 +1,28 @@
 import { useContext, useMemo, useState, useRef } from "react";
 import UserBox from "./UserBox";
-import { UsersContext } from "../contexts/UsersContextProvider";
+import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import Search from "../assets/search.jsx";
-// import {
-//   List,
-//   AutoSizer,
-//   CellMeasurer,
-//   CellMeasurerCache,
-// } from "react-virtualized";
 
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 
-const ActiveMembers = () => {
-  // // autoSizer stuff
-  // const cache = useRef(
-  //   new CellMeasurerCache({
-  //     fixedWidth: true,
-  //     defaultHeight: 45,
-  //   }),
-  // );
+/*
 
+  user data received 
+  {
+    ip: _,
+    name: _,
+    peerId: _,
+  }
+  */
+
+const ActiveMembers = () => {
   // needed states
   const [searchValue, setSearchValue] = useState("");
-  const { users, userDetails, isPinned } = useContext(UsersContext);
+  /**
+   * @type {import('../contexts/UsersContextProvider').UserContextValue}
+   */
+  const { users, userDetails, isPinned } = useUser();
   const inputRef = useRef(null);
   // search functionality
   let searchTimeout;
@@ -40,7 +39,7 @@ const ActiveMembers = () => {
   const filteredUsers = useMemo(() => {
     // console.log('ran search');
     searchValue && console.log("::searched for ", searchValue);
-    return users.filter(({ id: userId }) => {
+    return users.filter(({ peerId: userId }) => {
       if (!userDetails[userId]) return false;
       return userDetails[userId].name
         .toLowerCase()
@@ -49,15 +48,15 @@ const ActiveMembers = () => {
   }, [searchValue, users]);
 
   const pinnedUsers = filteredUsers
-    .filter(({ id }) => isPinned.get(id))
+    .filter(({ peerId }) => isPinned.get(peerId))
     .sort((a, b) => {
-      return isPinned.get(b.id) - isPinned.get(a.id);
+      return isPinned.get(b.peerId) - isPinned.get(a.peerId);
     });
 
   const sortedUsers = [
     ...pinnedUsers,
     ...filteredUsers.filter(
-      ({ id }) => !isPinned.get(id),
+      ({ peerId }) => !isPinned.get(peerId),
     ) /* Nonpinned users */,
   ];
 
@@ -100,15 +99,15 @@ const ActiveMembers = () => {
                 itemSize={50}
               >
                 {({ index, style }) => {
-                  const { id } = sortedUsers[index];
+                  const { peerId } = sortedUsers[index];
                   return (
                     <div style={style}>
                       <UserBox
-                        id={id}
+                        id={peerId}
                         key={index}
-                        isPinned={isPinned.get(id)}
+                        isPinned={isPinned.get(peerId)}
                         style={style}
-                        userName={userDetails[id].name}
+                        userName={userDetails[peerId].name}
                       />
                     </div>
                   );
@@ -125,7 +124,7 @@ const ActiveMembers = () => {
 export default ActiveMembers;
 
 /*
- 
+
         <AutoSizer>
           {({ width, height }) => {
             return (

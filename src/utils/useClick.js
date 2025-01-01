@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { sendProfiles } from "./manageProfiles";
-import { UsersContext } from "../contexts/UsersContextProvider";
+import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
 import { getUser, setUser } from "./storeAndRetriveProfile";
 
@@ -17,28 +17,20 @@ const profileExist = (profiles, check) => {
   return check in profiles;
 };
 
-const useClick = (profiles, setSelectedProfile) => {
+const useClick = (profiles, msgId, setSelectedProfile) => {
   const [found, setFound] = useState(false);
-  const { setOwner } = useContext(UsersContext);
-  const { signalsSocket: socket } = useWebSocket();
-  // console.log(
-  //   "----------------------------> messages socket : ",
-  //   useWebSocket(),
-  // );
-  const wrapperSetFound = ({ selectedProfile, profiles }) => {
-    setOwner(profiles[selectedProfile]);
-    setUser(selectedProfile);
-    sendProfiles(socket, profiles, selectedProfile);
-    localStorage.setItem("alreadySelected", "true");
-    setFound(true);
-  };
+  /**
+   * @type {import('../contexts/UsersContextProvider').UserContextValue}
+   */
+  const { setOwner } = useUser();
+  const { signalsSocket: socket, senders } = useWebSocket();
   useEffect(() => {
     const hasFound = localStorage.getItem("alreadySelected");
 
     if (hasFound === "true") {
-      const user = getUser();
-      if (profileExist(profiles, user)) {
-        setSelectedProfile(user);
+      const { selectedProfile } = getUser();
+      if (profileExist(profiles, selectedProfile)) {
+        setSelectedProfile(selectedProfile);
       }
     }
   }, [profiles]);

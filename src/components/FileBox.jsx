@@ -2,10 +2,10 @@
 import fileLogo from "../assets/fileIcon.png";
 import consts from "../Constants";
 import { useWebSocket } from "../contexts/WebSocketContextProvider.js";
-import { contentSenderObject } from "../utils/ContentSenderObject.js";
+import { useContentSender } from "../utils/ContentSenderObject.js";
 
 const FileBox = ({ fileProps }) => {
-  const { socket } = useWebSocket();
+  const { socket, senders } = useWebSocket();
   let now = new Date();
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
@@ -20,12 +20,7 @@ const FileBox = ({ fileProps }) => {
     isAccepted = false,
   } = fileProps;
   const handleClick = () => {
-    new contentSenderObject(
-      socket,
-      consts.ACCEPT_FILE,
-      "accept",
-      id,
-    ).sendContent();
+    senders.signalSender(consts.ACCEPT_FILE, "accept", id);
   };
   return (
     <div
@@ -94,4 +89,3 @@ export const getFile = (extraProps) => {
     ...extraProps,
   };
 };
-

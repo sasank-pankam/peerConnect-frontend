@@ -1,13 +1,20 @@
 import { useContext } from "react";
-import { UsersContext } from "../contexts/UsersContextProvider";
+import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import UserChatContainer from "./UserChatContainer";
 import IntroAboutApplication from "./IntroAboutApplication.jsx";
 
 function UserChatContainersWrapper() {
-  const { currentActiveUser } = useContext(UsersContext);
+  /**
+   * @type {import('../contexts/UsersContextProvider').UserContextValue}
+   */
+  const { currentActiveUser } = useUser();
   return (
     <>
-        {currentActiveUser === null ? <IntroAboutApplication/> : <UserChatContainer id={currentActiveUser} key={currentActiveUser}/>}
+      {currentActiveUser === null ? (
+        <IntroAboutApplication />
+      ) : (
+        <UserChatContainer id={currentActiveUser} key={currentActiveUser} />
+      )}
     </>
   );
 }

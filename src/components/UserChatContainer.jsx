@@ -1,10 +1,10 @@
 import { useContext, useRef, useEffect, useState } from "react";
-import { UsersContext } from "../contexts/UsersContextProvider";
+import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import { useSelector } from "react-redux";
 import ItemWrapper from "./ItemWrapper";
 import ScrollToBottom from "./ScrollToBottom";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
-import { contentSenderObject } from "../utils/ContentSenderObject";
+import { useContentSender } from "../utils/ContentSenderObject";
 import consts from "../Constants";
 
 const blockedStyle = {
@@ -18,19 +18,23 @@ const blockedStyle = {
 
 // eslint-disable-next-line react/prop-types
 const UserChatContainer = ({ id }) => {
+  /**
+   * @type {import('../contexts/UsersContextProvider').UserContextValue}
+   */
   const { currentPositions, setCurrentPositions, blockedYou, youBlocked } =
-    useContext(UsersContext);
-  const { signalsSocket } = useWebSocket();
+    useUser();
+  const { signalsSocket, senders } = useWebSocket();
 
   const messageList = useSelector((state) => state.Users[id]) || [];
+
   const divRef = useRef(null);
   const scrollRef = useRef(0);
   // const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (messageList.length === 0) {
-      fetchMessages();
-    }
+    // if (messageList.length === 0) {
+    //   fetchMessages();
+    // }
 
     if (divRef.current) {
       divRef.current.scrollTop = currentPositions.get(id) || 0;
@@ -58,12 +62,7 @@ const UserChatContainer = ({ id }) => {
   // TODO: change after creating messages socket
   const messagesSocket = null;
   const fetchMessages = () => {
-    new contentSenderObject(
-      messagesSocket,
-      consts.LOAD_MESSAGES,
-      messageList.length,
-      id,
-    ).sendContent();
+    senders.signalSender(consts.LOAD_MESSAGES, messageList.length, id);
   };
 
   return (

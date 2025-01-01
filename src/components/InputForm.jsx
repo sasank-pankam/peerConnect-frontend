@@ -1,8 +1,7 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import { UsersContext } from "../contexts/UsersContextProvider";
+import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
 import { appendMF } from "../app/MessagesSlice";
-import { contentSenderObject } from "../utils/ContentSenderObject";
 import { getMessage } from "../components/MessageBox";
 import { getFile } from "../components/FileBox";
 import { useDispatch } from "react-redux";
@@ -22,14 +21,17 @@ const useCleanInput = (inpRef, currentActiveUser, setIsSent) => {
 
 const InputForm = () => {
   const dispatch = useDispatch();
-  const { socket } = useWebSocket();
+  const { senders } = useWebSocket();
   const [isSent, setIsSent] = useState(false);
 
+  /**
+   * @type {import('../contexts/UsersContextProvider').UserContextValue}
+   */
   const {
     currentActiveUser /* , counts, setCounts */,
     blockedYou,
     youBlocked,
-  } = useContext(UsersContext);
+  } = useUser();
 
   const inpRef = useRef(null);
 
@@ -37,35 +39,23 @@ const InputForm = () => {
 
   const triggerDirectoryChange = (event) => {
     event.preventDefault();
-    new contentSenderObject(
-      socket,
-      consts.COMMAND,
-      consts.SEND_FILE,
-      currentActiveUser,
-    ).sendContent();
+    senders.signalSender(consts.COMMAND, consts.SEND_FILE, currentActiveUser);
   };
   const triggerSendFile = (event) => {
     event.preventDefault();
-    new contentSenderObject(
-      socket,
-      consts.COMMAND,
-      consts.SEND_FILE,
-      currentActiveUser,
-    ).sendContent();
+    senders.signalSender(consts.COMMAND, consts.SEND_FILE, currentActiveUser);
   };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     let message = String(event.target[0].value);
     event.target[0].value = "";
     if (message === "") return;
     if (message.length > 6 && message.substring(0, 6) === "file::") {
-      new contentSenderObject(
-        socket,
+      senders.messageSender(
         consts.NEW_FILE,
         message.substring(6),
         currentActiveUser,
-      ).sendContent();
+      );
       // dispatch(
       //     appendMF({
       //         newMessage: getFile({
@@ -82,12 +72,7 @@ const InputForm = () => {
       return;
     }
     message = parseMessage(message);
-    new contentSenderObject(
-      socket,
-      consts.NEW_MESSAGE,
-      message,
-      currentActiveUser,
-    ).sendContent();
+    senders.messageSender(consts.NEW_MESSAGE, message, currentActiveUser);
 
     // console.log("sent message");
     dispatch(
@@ -96,7 +81,7 @@ const InputForm = () => {
         id: currentActiveUser,
       }),
     ); // for appending message to chat container
-    console.log("appending message");
+    // console.log("appending message");
   };
 
   if (
@@ -146,12 +131,7 @@ const InputForm = () => {
         <input
           onFocus={() => {
             if (isSent) return;
-            new contentSenderObject(
-              socket,
-              consts.ActiveUser,
-              "",
-              currentActiveUser,
-            ).sendContent();
+            senders.signalSender(consts.ActiveUser, "", currentActiveUser);
             setIsSent(true);
           }}
           ref={inpRef}
@@ -166,11 +146,9 @@ const InputForm = () => {
     </>
   );
 };
-
 export default InputForm;
 
-{
-  /* <button
+/* <button
   className="down-icon"
   style={{}}
   onClick={(event) => {
@@ -194,4 +172,3 @@ export default InputForm;
     style={{ display: isBottom ? "none" : "flex" }}
   />
   </button> */
-}

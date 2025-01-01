@@ -1,8 +1,11 @@
 import React, { useContext } from "react";
-import { UsersContext } from "../contexts/UsersContextProvider";
+import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 
 // eslint-disable-next-line react/prop-types
 const UserBox = ({ id: uid, userName, isPinned }) => {
+  /**
+   * @type {import('../contexts/UsersContextProvider').UserContextValue}
+   */
   const {
     setCurrentActiveUser,
     counts,
@@ -10,7 +13,7 @@ const UserBox = ({ id: uid, userName, isPinned }) => {
     setIsVisible,
     // isPinned,
     // setIsPinned,
-  } = useContext(UsersContext);
+  } = useUser();
 
   const handleClick = (event) => {
     event.preventDefault();
@@ -40,7 +43,7 @@ const UserBox = ({ id: uid, userName, isPinned }) => {
       id={uid}
       onClick={handleClick}
       onContextMenu={handleContextMenu}
-      // onMouseDown={handleMouseDown}
+    // onMouseDown={handleMouseDown}
     >
       <div>{userName}</div>
       <div style={{ display: "flex" }}>

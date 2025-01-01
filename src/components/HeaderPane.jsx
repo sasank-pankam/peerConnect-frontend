@@ -1,19 +1,25 @@
 import { useContext } from "react";
-import { UsersContext } from "../contexts/UsersContextProvider";
-// import { contentSenderObject } from "../utils/ContentSenderObject";
+import { UsersContext, useUser } from "../contexts/UsersContextProvider";
+// import { contentSender } from "../utils/ContentSenderObject";
 // import consts from '../Constants';
 
 function HeaderPane() {
-  const { owner, currentActiveUser, userDetails } = useContext(UsersContext);
+  /**
+   * @type {import('../contexts/UsersContextProvider').UserContextValue}
+   */
+  const { owner, currentActiveUser, userDetails } = useUser();
 
+  // console.log("Owner: ", owner, currentActiveUser, userDetails);
   // useEffect(() => {
-  // new contentSenderObject(
+  // new (dnpdf,NpcontentSender(
   //   consts.ActiveUser,
   //   "",
   //   currentActiveUser,
   // ).sendContent();
   // },[currentActiveUser])
   // console.log("owner: ", owner);
+
+  console.log("owner: ", owner);
 
   return (
     <div className="header-container">
@@ -26,3 +32,7 @@ function HeaderPane() {
 }
 
 export default HeaderPane;
+
+/*
+ 
+ */

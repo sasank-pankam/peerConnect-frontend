@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { contentSenderObject } from "./ContentSenderObject";
+import consts from "../Constants";
+import { useContentSender } from "./ContentSenderObject";
+import { useWebSocket } from "../contexts/WebSocketContextProvider";
 
 /*
   profile = {
@@ -22,62 +24,53 @@ import { contentSenderObject } from "./ContentSenderObject";
   }
 
 old method
-Array.from(Object.values(profiles), (value) => ({
-      owner: value.USER.name,
-      changed: value.USER.name,
-      confs: {
-        ip: value.SERVER.ip,
-        port: value.SERVER.ip,
-      },
-    }));
+Array.from(socket);
 */
 
 const useGetProfiles = (socket) => {
-  // console.log("Socket in getProfiles: ", socket);
-
   const [profiles, setProfiles] = useState([]);
+  const { senders } = useWebSocket();
   const messageFunc = (event) => {
     const data = JSON.parse(event.data);
-    // console.log("at messageFunc : ", data);
-    if (data.header !== "this is a profiles list") return;
+    if (data.header !== consts.CHANGED_PEER_LIST) return;
 
     const profilesArray = data.content;
-    // console.log("profiles :\n", data);
-    setProfiles(profilesArray);
+    setProfiles([data.msgId, profilesArray]);
   };
   useEffect(() => {
-    if (!socket) {
-      setProfiles({
-        ["ali.ini"]: {
-          USER: { name: "ali" },
-          SERVER: {
-            ip: "172.168.0.1",
-            port: 2020,
+    // console.log("sodi: ", senders.signalSender);
+    if (!senders.signalSender) {
+      setProfiles([
+        null,
+        {
+          ["ali.ini"]: {
+            USER: { name: "ali" },
+            SERVER: {
+              ip: "172.168.0.1",
+              port: 2020,
+            },
+          },
+          ["sasank.ini"]: {
+            USER: { name: "sasank" },
+            SERVER: {
+              ip: "172.168.0.1",
+              port: 2020,
+            },
+          },
+          ["admin.ini"]: {
+            USER: { name: "admin" },
+            SERVER: {
+              ip: "172.168.0.1",
+              port: 2020,
+            },
           },
         },
-        ["sasank.ini"]: {
-          USER: { name: "sasank" },
-          SERVER: {
-            ip: "172.168.0.1",
-            port: 2020,
-          },
-        },
-        ["admin.ini"]: {
-          USER: { name: "admin" },
-          SERVER: {
-            ip: "172.168.0.1",
-            port: 2020,
-          },
-        },
-      });
+      ]);
     } else {
       socket.addEventListener("message", messageFunc);
+      senders.signalSender(consts.SENDPROFILES, null, null, null);
     }
-
-    return () => {
-      if (socket) socket.removeEventListener("message", messageFunc);
-    };
-  }, [socket]);
+  }, [socket, senders]);
 
   return [profiles, setProfiles];
 };
@@ -87,7 +80,7 @@ export default useGetProfiles;
 // not using
 export const getChangedProfiles = (profiles) => {
   return {
-    ["header"]: "this is a profiles list",
+    ["header"]: consts.CHANGED_PEER_LIST,
     ["content"]: Object.fromEntries(
       profiles.map((profile) => {
         return [
@@ -106,20 +99,13 @@ export const getChangedProfiles = (profiles) => {
   };
 };
 
-export const sendProfiles = (socket, profiles, selectedProfile) => {
+export const sendProfiles = (profiles, selectedProfile, senders, id) => {
   // profiles
-  new contentSenderObject(
-    socket,
-    "new profile list",
-    profiles,
-    "sodi",
-  ).sendContent();
-  // selected profile
-  console.log("-------------> selsected Profile : ", profiles, selectedProfile);
-  new contentSenderObject(
-    socket,
-    "selected profile",
+  senders.signalSender(consts.HANDLE_UPDATED_PEERS, profiles, null, id);
+  senders.signalSender(
+    consts.HANDLE_SET_PROFILE,
     profiles[selectedProfile],
     null,
-  ).sendContent();
+    null,
+  );
 };

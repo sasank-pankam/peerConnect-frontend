@@ -1,26 +1,38 @@
 export default {
-  NewUser: "newuser",
+  NewUser: "this is a command",
   UserLeft: "userleft",
   ActiveUser: "change-in-activeuser",
   SYNC_USERS: "sync-users",
   // IP: "172.16.197.166",
-  IP: "127.0.0.1",
-  ALT_IP: "127.0.0.5",
-  PORT: 10001,
-  MESSAGES_PORT: 10000,
-  HEADER: "HEADER",
-  CONTENT: "CONTENT",
-  ID: "ID",
+  IP: "172.16.196.238",
+  // IP: "127.0.0.1",
+  // ALT_IP: "127.0.0.5",
+  SIGNALS_PORT: 12260,
+  CHANGED_PEER_LIST: "1this is a profiles list",
+  MESSAGES_PORT: 12260,
+  HEADER: "header",
+  CONTENT: "content",
+  ID: "id",
 
   COMMAND: "COMMAND",
   SUBHEADER: "SUBHEADER",
   NEW_CONNECTION: "connect user",
   END: "end programe",
 
+  SENDPROFILES: "1send profiles",
+
   LOAD_MESSAGES: "load messages",
   CHANGE_USER_NAME: "changeusername",
 
   NEW_MESSAGE: "this is a message",
+
+  HANDLE_SEARCH_FOR_NAME: "1search name",
+  HANDLE_SYNC_USERS: "1sync users      ",
+  HANDLE_CONNECT_USER: "1connect_peer",
+  HANDLE_SEND_PEER_LIST: "1send peer list",
+  HANDLE_VERIFICATION: "1han verification",
+  HANDLE_SET_PROFILE: "1set selected profile",
+  HANDLE_UPDATED_PEERS: "1updated peers list",
 
   FILE_RECEIVED: "this is a file",
   FILE_SENT: "file sent",
@@ -39,11 +51,3 @@ export default {
   FILE_TYPE: 1,
   NULL_TYPE: 0,
 };
-
-/* 
-
-{
-
-}
-
-*/

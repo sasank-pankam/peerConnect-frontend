@@ -1,10 +1,13 @@
 import { useContext } from "react";
-import { UsersContext } from "../contexts/UsersContextProvider";
-import { contentSenderObject } from "../utils/ContentSenderObject.js";
+import { UsersContext, useUser } from "../contexts/UsersContextProvider";
+import { useContentSender } from "../utils/ContentSenderObject.js";
 import consts from "../Constants";
 import { useWebSocket } from "../contexts/WebSocketContextProvider.js";
 
 const ContextMenu = () => {
+  /**
+   * @type {import('../contexts/UsersContextProvider').UserContextValue}
+   */
   const {
     isVisible,
     setIsVisible,
@@ -12,9 +15,12 @@ const ContextMenu = () => {
     setIsPinned,
     youBlocked,
     setYouBlocked,
-  } = useContext(UsersContext);
+  } = useUser();
 
-  const { socket } = useWebSocket();
+  /**
+   * @type {import('../contexts/WebSocketContextProvider.js').websocketContextValue}
+   */
+  const { senders } = useWebSocket();
 
   if (!isVisible.visibility) {
     return <></>;
@@ -51,12 +57,12 @@ const ContextMenu = () => {
       return newState;
     });
     setIsVisible({ visibility: false, id: null, position: { x: 0, y: 0 } });
-    new contentSenderObject(
-      socket,
+
+    senders.signalSender(
       consts.COMMAND,
       { [consts.SUBHEADER]: consts.BLOCK },
       id,
-    ).sendContent();
+    );
   };
 
   return (
@@ -70,4 +76,3 @@ const ContextMenu = () => {
 };
 
 export default ContextMenu;
-

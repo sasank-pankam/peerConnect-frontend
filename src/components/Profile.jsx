@@ -1,16 +1,15 @@
 import { useState } from "react";
 
-const Profile = ({
-  profileName,
-  selectedProfile,
-  profiles,
-  onClick,
-  setProfiles,
-  index,
-}) => {
-  // const { profNum } = profile;
+/**
+ * @param {string} profileName
+ * @param {Boolean} selectedProfile
+ * @param {Object} profiles
+ * @param {() => void} onClick
+ * @param {() => void} setProfiles
+ */
+const Profile = ({ profileName, profile, onClick, setProfiles }) => {
   const [edit, setEdit] = useState(false);
-  const profile = profiles[profileName];
+  const selectedProfile = profile?.selected === true;
   return (
     <div
       onClick={onClick}
@@ -81,7 +80,7 @@ const Profile = ({
                   // const newProfiles = [...prev];
                   // newProfiles[index] = newProfile;
                   // return newProfiles;
-                  return { ...prev };
+                  return [prev[0], { ...prev[1] }];
                 });
                 setEdit(false);
               }}

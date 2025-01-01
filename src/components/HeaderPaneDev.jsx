@@ -1,12 +1,15 @@
 import { useContext, useRef } from "react";
 import { appendMF } from "../app/MessagesSlice";
-import { UsersContext } from "../contexts/UsersContextProvider";
+import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import { getMessage } from "./MessageBox";
 import { getFile } from "./FileBox";
 import { useDispatch } from "react-redux";
 import { useWebSocket } from "../contexts/WebSocketContextProvider.js";
 
 function HeaderPane() {
+  /**
+   * @type {import('../contexts/UsersContextProvider').UserContextValue}
+   */
   const {
     owner,
     currentActiveUser,
@@ -21,7 +24,7 @@ function HeaderPane() {
     setLatestTimeStampOfUserMessages,
     setYouBlocked,
     setBlockedYou,
-  } = useContext(UsersContext);
+  } = useUser();
 
   const { setSessionEnd } = useWebSocket();
   const reference = useRef(null);
@@ -57,7 +60,7 @@ function HeaderPane() {
 
   const generateMessages = (id) => {
     if (id == null) {
-      console.log("Select a user first");
+      // console.log("Select a user first");
       return;
     }
     const messages = [
@@ -78,7 +81,7 @@ function HeaderPane() {
 
   const generateFiles = (id) => {
     if (id == null) {
-      console.log("Select a id first");
+      // console.log("Select a id first");
       return;
     }
     [
@@ -136,9 +139,9 @@ function HeaderPane() {
   };
 
   const pinUser = (id) => {
-    console.log(`Pinned user ${id}`);
+    // console.log(`Pinned user ${id}`);
     if (id == null) {
-      console.log("Select a id first");
+      // console.log("Select a id first");
       return;
     }
     setIsPinned((prevPinned) => {
@@ -148,9 +151,9 @@ function HeaderPane() {
     });
   };
   const unPinUser = (id) => {
-    console.log(`Unpinned user ${id}`);
+    // console.log(`Unpinned user ${id}`);
     if (id == null) {
-      console.log("Select a id first");
+      // console.log("Select a id first");
       return;
     }
     setIsPinned((prevPinned) => {
@@ -161,9 +164,9 @@ function HeaderPane() {
   };
 
   const blockedYou = (id) => {
-    console.log(`${id} Blocked you`);
+    // console.log(`${id} Blocked you`);
     if (id == null) {
-      console.log("Select a id first");
+      // console.log("Select a id first");
       return;
     }
     setBlockedYou((prevBlocked) => {
@@ -174,9 +177,9 @@ function HeaderPane() {
   };
 
   const unBlockedYou = (id) => {
-    console.log(`${id} Unblocked you`);
+    // console.log(`${id} Unblocked you`);
     if (id == null) {
-      console.log("Select a id first");
+      // console.log("Select a id first");
       return;
     }
     setBlockedYou((prevBlocked) => {
@@ -187,9 +190,9 @@ function HeaderPane() {
   };
 
   const youBlocked = (id) => {
-    console.log(`You blocked ${id}`);
+    // console.log(`You blocked ${id}`);
     if (id == null) {
-      console.log("Select a id first");
+      // console.log("Select a id first");
       return;
     }
     setYouBlocked((prevBlocked) => {
@@ -200,9 +203,9 @@ function HeaderPane() {
   };
 
   const youUnblocked = (id) => {
-    console.log(`You unblocked ${id}`);
+    // console.log(`You unblocked ${id}`);
     if (id == null) {
-      console.log("Select a id first");
+      // console.log("Select a id first");
       return;
     }
     setYouBlocked((prevBlocked) => {
@@ -308,4 +311,3 @@ function HeaderPane() {
 // };
 
 export default HeaderPane;
-
