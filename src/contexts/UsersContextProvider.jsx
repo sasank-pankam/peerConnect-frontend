@@ -52,21 +52,21 @@ export const UsersProvider = ({ children }) => {
   const timeStamps = {};
   const positions = new Map();
 
-  for (let i = 0; i < 90; i++) {
-    listOfusers.push({
-      peerId: i,
-      name: `ali ${i}`,
-      ip: `test ${i}`,
-    });
-    userDedatils[i] = {
-      name: `user ${i}`,
-      // anything to be added here for user details later
-    };
-    userCounts[i] = 0;
-    timeStamps[i] = 0;
-    positions.set(i, 0);
-    // renderables.push(i);
-  }
+  // for (let i = 0; i < 90; i++) {
+  //   listOfusers.push({
+  //     peerId: i,
+  //     name: `ali ${i}`,
+  //     ip: `test ${i}`,
+  //   });
+  //   userDedatils[i] = {
+  //     name: `user ${i}`,
+  //     // anything to be added here for user details later
+  //   };
+  //   userCounts[i] = 0;
+  //   timeStamps[i] = 0;
+  //   positions.set(i, 0);
+  //   // renderables.push(i);
+  // }
 
   // Define states and types for each piece of state
   const [users, setUsers] = useState(listOfusers); // Array<{ id: number }>

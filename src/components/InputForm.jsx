@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState, useRef } from "react";
+import { Message } from "../utils/Message";
 import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
 import { appendMF } from "../app/MessagesSlice";
@@ -21,7 +22,7 @@ const useCleanInput = (inpRef, currentActiveUser, setIsSent) => {
 
 const InputForm = () => {
   const dispatch = useDispatch();
-  const { senders } = useWebSocket();
+  const { sender } = useWebSocket();
   const [isSent, setIsSent] = useState(false);
 
   /**
@@ -39,11 +40,11 @@ const InputForm = () => {
 
   const triggerDirectoryChange = (event) => {
     event.preventDefault();
-    senders.signalSender(consts.COMMAND, consts.SEND_FILE, currentActiveUser);
+    sender(new Message(consts.COMMAND, consts.SEND_FILE, currentActiveUser));
   };
   const triggerSendFile = (event) => {
     event.preventDefault();
-    senders.signalSender(consts.COMMAND, consts.SEND_FILE, currentActiveUser);
+    sender(new Message(consts.COMMAND, consts.SEND_FILE, currentActiveUser));
   };
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -51,10 +52,8 @@ const InputForm = () => {
     event.target[0].value = "";
     if (message === "") return;
     if (message.length > 6 && message.substring(0, 6) === "file::") {
-      senders.messageSender(
-        consts.NEW_FILE,
-        message.substring(6),
-        currentActiveUser,
+      sender(
+        new Message(consts.NEW_FILE, message.substring(6), currentActiveUser),
       );
       // dispatch(
       //     appendMF({
@@ -72,7 +71,7 @@ const InputForm = () => {
       return;
     }
     message = parseMessage(message);
-    senders.messageSender(consts.NEW_MESSAGE, message, currentActiveUser);
+    sender(new Message(consts.NEW_MESSAGE, message, currentActiveUser));
 
     // console.log("sent message");
     dispatch(
@@ -131,7 +130,7 @@ const InputForm = () => {
         <input
           onFocus={() => {
             if (isSent) return;
-            senders.signalSender(consts.ActiveUser, "", currentActiveUser);
+            sender(new Message(consts.ActiveUser, "", currentActiveUser));
             setIsSent(true);
           }}
           ref={inpRef}

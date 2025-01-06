@@ -1,10 +1,11 @@
 import { useContext, useRef, useEffect, useState } from "react";
+import { Message } from "../utils/Message";
 import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import { useSelector } from "react-redux";
 import ItemWrapper from "./ItemWrapper";
 import ScrollToBottom from "./ScrollToBottom";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
-import { useContentSender } from "../utils/ContentSenderObject";
+import { dataSender } from "../utils/Sender";
 import consts from "../Constants";
 
 const blockedStyle = {
@@ -23,7 +24,7 @@ const UserChatContainer = ({ id }) => {
    */
   const { currentPositions, setCurrentPositions, blockedYou, youBlocked } =
     useUser();
-  const { signalsSocket, senders } = useWebSocket();
+  const { sender } = useWebSocket();
 
   const messageList = useSelector((state) => state.Users[id]) || [];
 
@@ -62,7 +63,7 @@ const UserChatContainer = ({ id }) => {
   // TODO: change after creating messages socket
   const messagesSocket = null;
   const fetchMessages = () => {
-    senders.signalSender(consts.LOAD_MESSAGES, messageList.length, id);
+    sender(new Message(consts.LOAD_MESSAGES, messageList.length, id));
   };
 
   return (

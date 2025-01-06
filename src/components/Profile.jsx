@@ -1,20 +1,21 @@
 import { useState } from "react";
 
 /**
- * @param {string} profileName
+ * @param {Boolean} isSelectedProfile
  * @param {Boolean} selectedProfile
  * @param {Object} profiles
  * @param {() => void} onClick
  * @param {() => void} setProfiles
  */
-const Profile = ({ profileName, profile, onClick, setProfiles }) => {
+const Profile = ({ isSelectedProfile, profile, onClick, setProfiles }) => {
   const [edit, setEdit] = useState(false);
-  const selectedProfile = profile?.selected === true;
   return (
     <div
       onClick={onClick}
       className={
-        selectedProfile ? "bg-gray-400  rounded-xl" : "bg-gray-200  rounded-xl"
+        isSelectedProfile
+          ? "bg-gray-400  rounded-xl"
+          : "bg-gray-200  rounded-xl"
       }
     >
       {edit ? (

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import consts from "../Constants";
-import { useContentSender } from "./ContentSenderObject";
+import { dataSender } from "./Sender";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
+import { Message } from "./Message";
 
 /*
   profile = {
@@ -27,19 +28,18 @@ old method
 Array.from(socket);
 */
 
-const useGetProfiles = (socket) => {
+const useGetProfiles = () => {
   const [profiles, setProfiles] = useState([]);
-  const { senders } = useWebSocket();
-  const messageFunc = (event) => {
-    const data = JSON.parse(event.data);
-    if (data.header !== consts.CHANGED_PEER_LIST) return;
-
-    const profilesArray = data.content;
-    setProfiles([data.msgId, profilesArray]);
+  const { sender, registerHandler, unRegisterHandler } = useWebSocket();
+  const extractAndSetProfiles = (message) => {
+    const profilesArray = message.content;
+    setProfiles([message.msgId, profilesArray]);
+    unRegisterHandler(consts.CHANGED_PEER_LIST);
   };
+
   useEffect(() => {
-    // console.log("sodi: ", senders.signalSender);
-    if (!senders.signalSender) {
+    // console.log("sodi: ", sender);
+    if (!sender) {
       setProfiles([
         null,
         {
@@ -67,10 +67,10 @@ const useGetProfiles = (socket) => {
         },
       ]);
     } else {
-      socket.addEventListener("message", messageFunc);
-      senders.signalSender(consts.SENDPROFILES, null, null, null);
+      registerHandler(consts.CHANGED_PEER_LIST, extractAndSetProfiles);
+      sender(new Message(consts.SENDPROFILES, null, null, null));
     }
-  }, [socket, senders]);
+  }, [sender, registerHandler]);
 
   return [profiles, setProfiles];
 };
@@ -99,13 +99,21 @@ export const getChangedProfiles = (profiles) => {
   };
 };
 
-export const sendProfiles = (profiles, selectedProfile, senders, id) => {
+/**
+ * @param {Object} profiles
+ * @param {string} selectedProfiles
+ * @param {Function} sender
+ * @param {string} id
+ */
+export const sendProfiles = (profiles, selectedProfile, sender, id) => {
   // profiles
-  senders.signalSender(consts.HANDLE_UPDATED_PEERS, profiles, null, id);
-  senders.signalSender(
-    consts.HANDLE_SET_PROFILE,
-    profiles[selectedProfile],
-    null,
-    null,
+  sender(new Message(consts.HANDLE_UPDATED_PEERS, profiles, null, id));
+  sender(
+    new Message(
+      consts.HANDLE_SET_PROFILE,
+      profiles[selectedProfile],
+      null,
+      null,
+    ),
   );
 };

@@ -1,12 +1,13 @@
 import { useContext, useRef } from "react";
 import { appendMF } from "../app/MessagesSlice";
-import { UsersContext, useUser } from "../contexts/UsersContextProvider";
+import { UsersContext } from "../contexts/UsersContextProvider";
 import { getMessage } from "./MessageBox";
 import { getFile } from "./FileBox";
 import { useDispatch } from "react-redux";
 import { useWebSocket } from "../contexts/WebSocketContextProvider.js";
 
 function HeaderPane() {
+  const { } = useContext(UsersContext);
   /**
    * @type {import('../contexts/UsersContextProvider').UserContextValue}
    */

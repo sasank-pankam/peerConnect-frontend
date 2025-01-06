@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Profile from "./Profile.jsx";
 import { getRandom255BitNumber } from "../utils/randomNumbers.js";
+import { useEffect } from "react";
+import { getSelectedProfileWithAttribute } from "../utils/actions.js";
 
 const ipv4Pattern =
   /^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/gm;
@@ -86,40 +88,35 @@ const askAndRemoveProfile = (selectedProfile, setProfiles) => {
 };
 
 /**
- * @param {Function} setClicked
- * @param {Array} profiles
+ * @param {Function} clicked
+ * @param {Object} profiles
  * @param {() => void} setProfiles
  */
-const ProfileWrapper = ({ setClicked, profiles = [], setProfiles }) => {
+const ProfileWrapper = ({ clicked, profiles = {}, setProfiles }) => {
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  useEffect(() => {
+    const profileName = getSelectedProfileWithAttribute(profiles);
+    if (profileName) delete profiles[profileName].USER.selected;
+    setSelectedProfile(profileName);
+  }, [profiles]);
   return (
     <div className="profiles-contianer flex flex-col gap-10 justify-center items-center">
       <div className="profiles flex gap-10">
         {profiles &&
-          Object.keys(profiles).map((profileName, index) => (
-            <Profile
-              setProfiles={setProfiles}
-              profile={profiles[profileName]}
-              profileName={profileName}
-              onClick={() => {
-                setProfiles((prev) => {
-                  const prevProfiles = prev[1];
-                  return [
-                    prev[0],
-                    {
-                      // :TODO: need to make the selected variable false for other users using for loop
-                      // or make a new state for the selection
-                      ...prevProfiles,
-                      [profileName]: {
-                        ...prevProfiles[profileName],
-                        selected: true,
-                      },
-                    },
-                  ];
-                });
-              }}
-              key={index}
-            />
-          ))}
+          Object.keys(profiles).map((profileName, index) => {
+            return (
+              <Profile
+                setProfiles={setProfiles}
+                profile={profiles[profileName]}
+                profileName={profileName}
+                onClick={() => {
+                  setSelectedProfile(profileName);
+                }}
+                isSelectedProfile={selectedProfile === profileName}
+                key={index}
+              />
+            );
+          })}
       </div>
       <div className="w-full flex flex-col gap-4 justify-center items-center h-full">
         <div className="profile-controls flex gap-10 justify-center items-center">
@@ -132,7 +129,7 @@ const ProfileWrapper = ({ setClicked, profiles = [], setProfiles }) => {
           <div
             onClick={() => {
               askAndRemoveProfile(selectedProfile, setProfiles);
-              setSelectedProfile("");
+              setSelectedProfile(null);
             }}
             className="remove cursor-pointer"
           >
@@ -147,7 +144,7 @@ const ProfileWrapper = ({ setClicked, profiles = [], setProfiles }) => {
                 alert("select a profile");
                 return;
               }
-              setClicked({
+              clicked({
                 selectedProfile,
                 profiles,
               });

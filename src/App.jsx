@@ -1,13 +1,17 @@
 import { useState, useEffect, useContext } from "react";
 import ChatApp from "./components/ChatApp.jsx";
-import { WebSocketContextProvider } from "./contexts/WebSocketContextProvider";
-import { useSocketWithHandler } from "./components/WebSocketHandler";
+import { useSocketWithHandshake } from "./components/WebSocketHandler.jsx";
+import {
+  useWebSocket,
+  WebSocketContextProvider,
+} from "./contexts/WebSocketContextProvider";
 import consts from "./Constants";
 import "./App.css";
 import ProfileWrapper from "./components/ProfileWrapper.jsx";
-import useClick from "./utils/useClick.js";
-import useGetProfiles from "./utils/manageProfiles.js";
-import { useContentSender } from "./utils/ContentSenderObject.js";
+import useGetProfiles, { sendProfiles } from "./utils/manageProfiles.js";
+import { dataSender } from "./utils/Sender.js";
+import { useUser } from "./contexts/UsersContextProvider.jsx";
+import { useSocket } from "./utils/useSockets.js";
 
 const useSessionEnd = () => {
   const [sessionEnd, setSessionEnd] = useState(false);
@@ -25,19 +29,30 @@ const EndSession = (sessionEnd, socket) => {
 };
 
 /**
- * @param {WebSocket} signalsSocket
- * @param {Boolean} sessionEnd
+ * @param {{ signalsSocket:WebSocket, sessionEnd: Boolean}} input
  * @returns {JSX.Element}
  */
-const LoadProfiles = ({ signalsSocket, sessionEnd }) => {
-  const [profiles, setProfiles] = useGetProfiles(signalsSocket);
+const LoadProfiles = ({ sessionEnd }) => {
+  const [profiles, setProfiles] = useGetProfiles();
   const [msgId, profilesArray] = profiles;
 
+  /**
+   * @type {import("./contexts/WebSocketContextProvider.js").websocketContextValue}
+   */
+  const { sender } = useWebSocket();
+
+  /**
+   * @type {import("./contexts/UsersContextProvider.jsx").UserContextValue}
+   */
+  const { setOwner } = useUser();
+
   const [clicked, setClicked] = useState(false);
-  const wrapperSetFound = ({ selectedProfile, profiles }) => {
+
+  const onClick = ({ selectedProfile, profiles }) => {
     setOwner(profiles[selectedProfile]);
-    sendProfiles(profiles, selectedProfile, senders, msgId);
-    setFound(true);
+    profiles[selectedProfile].USER.selected = "true";
+    sendProfiles(profiles, selectedProfile, sender, msgId);
+    setClicked(true);
   };
   if (sessionEnd) {
     return <div>Session Ended</div>;
@@ -50,90 +65,41 @@ const LoadProfiles = ({ signalsSocket, sessionEnd }) => {
         <ProfileWrapper
           profiles={profilesArray}
           setProfiles={setProfiles}
-          setClicked={wrapperSetFound}
+          clicked={onClick}
         />
       )}
     </>
   );
 };
 
-const meaageValidator = (message) => { };
-const signalsValidator = (message) => { };
+const LoadingAnim = () => {
+  return <div>loading...</div>;
+};
 
-/**
- * app component
- * @returns {JSX.Element}
- */
 const App = () => {
   const [sessionEnd, setSessionEnd] = useSessionEnd();
 
-  const [messagesSocket, setMessagesSocket] = useSocketWithHandler(
-    `ws://${consts.IP}:${consts.MESSAGES_PORT}`,
-    meaageValidator,
-    (websocket) => {
-      console.log("connected. messages");
-      websocket.send(
-        JSON.stringify({
-          header: 0x00,
-          content: null,
-          id: null,
-        }),
-      );
-    },
-  );
-  const [signalsSocket, setSignalsSocket] = useSocketWithHandler(
-    `ws://${consts.IP}:${consts.SIGNALS_PORT}`,
-    signalsValidator,
-    (websocket) => {
-      console.log("connected. signals.");
-
-      websocket.send(
-        JSON.stringify({
-          header: 0x01,
-          content: null,
-          id: null,
-        }),
-      );
-    },
-  );
-
-  const messageSender = useContentSender(messagesSocket, { name: "MESSAGES" });
-  const signalSender = useContentSender(signalsSocket, { name: "SIGNALS" });
-
-  const [senders, setSenders] = useState({
-    messageSender,
-    signalSender,
-  });
-
-  useEffect(() => {
-    setSenders({
-      messageSender,
-      signalSender,
-    });
-  }, [signalsSocket, messagesSocket]);
+  const {
+    signalsSocket,
+    messagesSocket,
+    registerHandler,
+    sender,
+    unRegisterHandler,
+  } = useSocket();
 
   EndSession(sessionEnd, signalsSocket);
 
+  if (!(signalsSocket && messagesSocket)) return <LoadingAnim />;
   if (sessionEnd) return <div>sessionEnded</div>;
   return (
     <WebSocketContextProvider
       value={{
-        messagesSocket,
-        // setMessagesSocket,
-        signalsSocket,
-        // setSignalsSocket,
-        setSessionEnd,
-
-        senders,
+        sender,
+        registerHandler,
+        unRegisterHandler,
       }}
     >
-      {signalsSocket && (
-        <LoadProfiles
-          senders={senders}
-          signalsSocket={signalsSocket}
-          sessionEnd={sessionEnd}
-        />
-      )}
+      {signalsSocket && <LoadProfiles sessionEnd={sessionEnd} />}
     </WebSocketContextProvider>
   );
 };

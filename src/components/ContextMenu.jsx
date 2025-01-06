@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { UsersContext, useUser } from "../contexts/UsersContextProvider";
-import { useContentSender } from "../utils/ContentSenderObject.js";
+import { Message } from "../utils/Message.js";
+import { dataSender } from "../utils/Sender.js";
 import consts from "../Constants";
 import { useWebSocket } from "../contexts/WebSocketContextProvider.js";
 
@@ -20,7 +21,7 @@ const ContextMenu = () => {
   /**
    * @type {import('../contexts/WebSocketContextProvider.js').websocketContextValue}
    */
-  const { senders } = useWebSocket();
+  const { sender } = useWebSocket();
 
   if (!isVisible.visibility) {
     return <></>;
@@ -58,10 +59,8 @@ const ContextMenu = () => {
     });
     setIsVisible({ visibility: false, id: null, position: { x: 0, y: 0 } });
 
-    senders.signalSender(
-      consts.COMMAND,
-      { [consts.SUBHEADER]: consts.BLOCK },
-      id,
+    sender(
+      new Message(consts.COMMAND, { [consts.SUBHEADER]: consts.BLOCK }, id),
     );
   };
 

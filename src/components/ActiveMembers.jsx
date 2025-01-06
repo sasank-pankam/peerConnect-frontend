@@ -104,10 +104,10 @@ const ActiveMembers = () => {
                     <div style={style}>
                       <UserBox
                         id={peerId}
-                        key={index}
                         isPinned={isPinned.get(peerId)}
                         style={style}
                         userName={userDetails[peerId].name}
+                        key={index} // for react
                       />
                     </div>
                   );

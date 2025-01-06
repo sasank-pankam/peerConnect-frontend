@@ -5,3 +5,14 @@ export const parseMessage = (message) => {
     return `<a href="https://${match}" target="_blank">${match}</a>`;
   });
 };
+
+export const getSelectedProfileWithAttribute = (profiles) => {
+  const res = Object.entries(profiles)
+    .map((profile) => {
+      const [key, config] = profile;
+      const hasSelected = config?.USER?.selected === "true";
+      return hasSelected ? key : false;
+    })
+    .find((param) => Boolean(param));
+  return res;
+};
