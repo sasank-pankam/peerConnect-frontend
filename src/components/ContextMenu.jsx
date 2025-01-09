@@ -3,23 +3,19 @@ import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import { Message } from "../utils/Message.js";
 import { dataSender } from "../utils/Sender.js";
 import consts from "../Constants";
-import { useWebSocket } from "../contexts/WebSocketContextProvider.js";
+import { useWebSocket } from "../contexts/WebSocketContextProvider.jsx";
+import { useUiState } from "../contexts/UiStateContextProvider.jsx";
+import { useInteraction } from "../contexts/InteractionContextProvider.jsx";
 
 const ContextMenu = () => {
   /**
    * @type {import('../contexts/UsersContextProvider').UserContextValue}
    */
-  const {
-    isVisible,
-    setIsVisible,
-    isPinned,
-    setIsPinned,
-    youBlocked,
-    setYouBlocked,
-  } = useUser();
+  const { isVisible, setIsVisible } = useUiState();
+  const { isPinned, setIsPinned, youBlocked, setYouBlocked } = useInteraction();
 
   /**
-   * @type {import('../contexts/WebSocketContextProvider.js').websocketContextValue}
+   * @type {import('../contexts/WebSocketContextProvider.jsx').websocketContextValue}
    */
   const { sender } = useWebSocket();
 

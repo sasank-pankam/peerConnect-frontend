@@ -1,19 +1,17 @@
 import React, { useContext } from "react";
 import { UsersContext, useUser } from "../contexts/UsersContextProvider";
+import { useActiveUser } from "../contexts/ActitveUserContextProvider";
+import { useMetaData } from "../contexts/MetadataContextProvider";
+import { useUiState } from "../contexts/UiStateContextProvider";
 
 // eslint-disable-next-line react/prop-types
 const UserBox = ({ id: userId, userName, isPinned }) => {
   /**
    * @type {import('../contexts/UsersContextProvider').UserContextValue}
    */
-  const {
-    setCurrentActiveUser,
-    counts,
-    currentActiveUser,
-    setIsVisible,
-    // isPinned,
-    // setIsPinned,
-  } = useUser();
+  const { setCurrentActiveUser, currentActiveUser } = useActiveUser();
+  const { counts } = useMetaData();
+  const { setIsVisible } = useUiState();
 
   const handleClick = (event) => {
     event.preventDefault();

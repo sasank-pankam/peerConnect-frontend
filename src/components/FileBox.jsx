@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import fileLogo from "../assets/fileIcon.png";
 import consts from "../Constants";
-import { useWebSocket } from "../contexts/WebSocketContextProvider.js";
+import { useWebSocket } from "../contexts/WebSocketContextProvider.jsx";
 import { Message } from "../utils/Message.js";
 import { dataSender } from "../utils/Sender.js";
 

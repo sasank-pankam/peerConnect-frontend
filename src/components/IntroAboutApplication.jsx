@@ -1,11 +1,12 @@
 import React from "react";
 import { UsersContext, useUser } from "../contexts/UsersContextProvider";
+import { useActiveUser } from "../contexts/ActitveUserContextProvider";
 
 function IntroAboutApplication() {
   /**
    * @type {import('../contexts/UsersContextProvider').UserContextValue}
    */
-  const { currentActiveUser } = useUser();
+  const { currentActiveUser } = useActiveUser();
   return (
     <div
       className="chats-container flex justify-center intro-page"
@@ -21,4 +22,3 @@ function IntroAboutApplication() {
 }
 
 export default IntroAboutApplication;
-

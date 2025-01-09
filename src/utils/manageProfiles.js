@@ -34,7 +34,7 @@ const useGetProfiles = () => {
   const extractAndSetProfiles = (message) => {
     const profilesArray = message.content;
     setProfiles([message.msgId, profilesArray]);
-    unRegisterHandler(consts.CHANGED_PEER_LIST);
+    // unRegisterHandler(consts.CHANGED_PROFILE_LIST);
   };
 
   useEffect(() => {
@@ -67,10 +67,10 @@ const useGetProfiles = () => {
         },
       ]);
     } else {
-      registerHandler(consts.CHANGED_PEER_LIST, extractAndSetProfiles);
+      registerHandler(consts.CHANGED_PROFILE_LIST, extractAndSetProfiles);
       sender(new Message(consts.SENDPROFILES, null, null, null));
     }
-  }, [sender, registerHandler]);
+  }, []);
 
   return [profiles, setProfiles];
 };
@@ -80,7 +80,7 @@ export default useGetProfiles;
 // not using
 export const getChangedProfiles = (profiles) => {
   return {
-    ["header"]: consts.CHANGED_PEER_LIST,
+    ["header"]: consts.CHANGED_PROFILE_LIST,
     ["content"]: Object.fromEntries(
       profiles.map((profile) => {
         return [

@@ -4,10 +4,10 @@ import { UsersContext } from "../contexts/UsersContextProvider";
 import { getMessage } from "./MessageBox";
 import { getFile } from "./FileBox";
 import { useDispatch } from "react-redux";
-import { useWebSocket } from "../contexts/WebSocketContextProvider.js";
+import { useWebSocket } from "../contexts/WebSocketContextProvider.jsx";
 
 function HeaderPane() {
-  const { } = useContext(UsersContext);
+  // const { } = useContext(UsersContext);
   /**
    * @type {import('../contexts/UsersContextProvider').UserContextValue}
    */

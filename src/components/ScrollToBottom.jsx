@@ -1,12 +1,12 @@
 import DownIcon from "../assets/down.svg";
 import { useContext, useEffect, useState } from "react";
-import { useUser } from "../contexts/UsersContextProvider";
+import { useMetaData } from "../contexts/MetadataContextProvider";
 
 const ScrollToBottom = ({ divRef, id }) => {
   /**
    * @type {import('../contexts/UsersContextProvider').UserContextValue}
    */
-  const { counts, setCounts } = useUser();
+  const { counts, setCounts } = useMetaData();
   const [scroll, setScroll] = useState(divRef.current.scrollTop);
   let displayStyle;
   useEffect(() => {
