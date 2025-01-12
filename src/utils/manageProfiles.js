@@ -34,42 +34,12 @@ const useGetProfiles = () => {
   const extractAndSetProfiles = (message) => {
     const profilesArray = message.content;
     setProfiles([message.msgId, profilesArray]);
-    // unRegisterHandler(consts.CHANGED_PROFILE_LIST);
+    unRegisterHandler(consts.CHANGED_PROFILE_LIST);
   };
 
   useEffect(() => {
-    // console.log("sodi: ", sender);
-    if (!sender) {
-      setProfiles([
-        null,
-        {
-          ["ali.ini"]: {
-            USER: { name: "ali" },
-            SERVER: {
-              ip: "172.168.0.1",
-              port: 2020,
-            },
-          },
-          ["sasank.ini"]: {
-            USER: { name: "sasank" },
-            SERVER: {
-              ip: "172.168.0.1",
-              port: 2020,
-            },
-          },
-          ["admin.ini"]: {
-            USER: { name: "admin" },
-            SERVER: {
-              ip: "172.168.0.1",
-              port: 2020,
-            },
-          },
-        },
-      ]);
-    } else {
-      registerHandler(consts.CHANGED_PROFILE_LIST, extractAndSetProfiles);
-      sender(new Message(consts.SENDPROFILES, null, null, null));
-    }
+    registerHandler(consts.CHANGED_PROFILE_LIST, extractAndSetProfiles);
+    sender(new Message(consts.SENDPROFILES, null, null, null));
   }, []);
 
   return [profiles, setProfiles];

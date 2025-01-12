@@ -45,9 +45,6 @@ const LoadProfiles = () => {
   const [profiles, setProfiles] = useGetProfiles();
   const [msgId, profilesArray] = profiles;
 
-  /**
-   * @type {import("./contexts/WebSocketContextProvider.jsx").websocketContextValue}
-   */
   const { sender } = useWebSocket();
 
   /**

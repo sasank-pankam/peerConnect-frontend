@@ -6,6 +6,9 @@ import Search from "../assets/search.jsx";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { useInteraction } from "../contexts/InteractionContextProvider.jsx";
+import { useWebSocket } from "../contexts/WebSocketContextProvider.jsx";
+import { useEffect } from "react";
+import consts from "../Constants.js";
 
 /*
 
@@ -25,6 +28,17 @@ const ActiveMembers = () => {
    */
   const { users, userDetails } = useUser();
   const { isPinned } = useInteraction();
+
+  const { registerHandler, unRegisterHandler } = useWebSocket();
+
+  useEffect(() => {
+    registerHandler();
+
+    return () => {
+      unRegisterHandler(consts.);
+    };
+  }, []);
+
   const inputRef = useRef(null);
   // search functionality
   let searchTimeout;

@@ -14,9 +14,6 @@ const ContextMenu = () => {
   const { isVisible, setIsVisible } = useUiState();
   const { isPinned, setIsPinned, youBlocked, setYouBlocked } = useInteraction();
 
-  /**
-   * @type {import('../contexts/WebSocketContextProvider.jsx').websocketContextValue}
-   */
   const { sender } = useWebSocket();
 
   if (!isVisible.visibility) {
