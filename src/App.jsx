@@ -1,19 +1,15 @@
 import { useState, useEffect, useContext } from "react";
-import { useSetRecvRegistery } from "./utils/SetRecvRegistery.js";
+
+import { debounce } from "./utils/actions.js";
 import ChatApp from "./components/ChatApp.jsx";
-import { useSocketWithHandshake } from "./components/WebSocketHandler.jsx";
 import {
   useWebSocket,
   WebSocketProvider,
 } from "./contexts/WebSocketContextProvider.jsx";
-import consts from "./Constants";
 import "./App.css";
 import ProfileWrapper from "./components/ProfileWrapper.jsx";
 import useGetProfiles, { sendProfiles } from "./utils/manageProfiles.js";
-import { dataSender } from "./utils/Sender.js";
 import { UsersProvider, useUser } from "./contexts/UsersContextProvider.jsx";
-import { useSocket } from "./utils/useSockets.js";
-import { Message } from "./utils/Message.js";
 import {
   OwnershipProvider,
   useOwner,
@@ -22,6 +18,9 @@ import { InteractionProvider } from "./contexts/InteractionContextProvider.jsx";
 import { ActiveUserProvider } from "./contexts/ActitveUserContextProvider.jsx";
 import { MetaDataProvider } from "./contexts/MetadataContextProvider.jsx";
 import { UiStateProvider } from "./contexts/UiStateContextProvider.jsx";
+
+import { FixedSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 
 const useSessionEnd = () => {
   const [sessionEnd, setSessionEnd] = useState(false);

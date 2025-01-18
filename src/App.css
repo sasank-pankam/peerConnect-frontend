@@ -12,12 +12,14 @@
 
 #root {
   height: 100vh;
-  width: 100%;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
   background-color: #f5f5f5;
 }
+
 .root-container {
   height: 97vh;
   width: 98%;
@@ -42,6 +44,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .current-username {
   margin-left: 0.3rem;
   /* border-left: 0.1rem solid grey; */
@@ -51,6 +54,7 @@
   display: flex;
   gap: 1rem;
 }
+
 .message {
   background: rgba(128, 128, 128, 0.233);
   max-width: 65%;
@@ -77,7 +81,7 @@
   /* justify-content: flex-end; */
 }
 
-.chats-container > :first-child {
+.chats-container> :first-child {
   margin-top: auto !important;
 }
 
@@ -106,6 +110,7 @@ input {
   cursor: pointer;
   overflow: hidden;
 }
+
 .activemembers {
   height: 100%;
   overflow: scroll;
@@ -134,16 +139,20 @@ input {
   display: flex;
   justify-content: space-between;
 }
+
 .user:hover {
   background-color: rgba(128, 128, 128, 0.5);
 }
+
 .user:nth-last-of-type(1) {
   margin-bottom: 0;
 }
+
 .scrollbar-dummy {
   scrollbar-gutter: stable;
   margin-right: 0.46rem;
-  margin-bottom: 0.2rem; /* search bar bottom padding */
+  margin-bottom: 0.2rem;
+  /* search bar bottom padding */
   padding: 0;
   font-size: medium;
 }
@@ -167,7 +176,7 @@ input {
   justify-content: stretch;
 }
 
-.context-menu > button {
+.context-menu>button {
   background-color: rgba(128, 128, 128, 0.233);
   border: none;
   outline: none;
@@ -176,7 +185,7 @@ input {
   font-size: medium;
 }
 
-.context-menu > button:hover {
+.context-menu>button:hover {
   background-color: rgba(128, 128, 128);
 }
 
@@ -185,9 +194,11 @@ input {
   justify-content: center;
   align-items: center;
 }
+
 .count {
   padding-right: 1rem;
 }
+
 .input-wrapper {
   display: flex;
   justify-content: space-between;
@@ -218,6 +229,7 @@ input {
   cursor: pointer;
   width: 4rem !important;
 }
+
 .time {
   font-size: 0.6rem;
   align-content: end;
@@ -260,6 +272,7 @@ input {
   gap: 0.2rem;
   align-items: center;
 }
+
 .file-name-container {
   display: flex;
   justify-content: space-between;
@@ -275,7 +288,7 @@ input {
   align-items: center;
 }
 
-.lower-icons-container > div {
+.lower-icons-container>div {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -300,8 +313,10 @@ input {
 
 /* Example styles for scrollbar */
 ::-webkit-scrollbar {
-  width: 0px; /* Width of the scrollbar */
+  width: 0px;
+  /* Width of the scrollbar */
 }
+
 a {
   text-decoration: none;
   color: rgb(25, 107, 179);
@@ -317,7 +332,7 @@ a:hover {
 }
 
 .profile-card,
-.profile-card > div:first-child {
+.profile-card>div:first-child {
   /* border: 2px solid black; */
   display: flex;
   flex-direction: column;
@@ -327,30 +342,35 @@ a:hover {
   padding: 2rem;
   padding-bottom: 1rem;
 }
-.profile-card > div:first-child {
+
+.profile-card>div:first-child {
   gap: 1rem;
 }
-.profile-card > div > p {
+
+.profile-card>div>p {
   display: flex;
   justify-content: space-between;
   /* text-overflow: ellipsis; */
   align-items: center;
   gap: 1rem;
 }
-.profile-card > div > p > input {
+
+.profile-card>div>p>input {
   border: 1px solid black;
   border-radius: 6%;
   padding: 0 0.1rem;
   outline: 0;
   width: 6rem;
 }
-.profile-card:hover > div > button {
+
+.profile-card:hover>div>button {
   opacity: 1;
 }
 
 p label:first-child {
   font-weight: bolder;
 }
+
 .profiles {
   display: flex;
   flex-wrap: wrap;

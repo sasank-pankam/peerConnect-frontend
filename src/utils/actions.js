@@ -16,3 +16,11 @@ export const getSelectedProfileWithAttribute = (profiles) => {
     .find((param) => Boolean(param));
   return res;
 };
+
+export const debounce = (func, wait) => {
+  let identifier;
+  return function(...args) {
+    clearTimeout(identifier);
+    identifier = setTimeout(() => func.apply(this, args), wait);
+  };
+};
