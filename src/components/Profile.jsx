@@ -78,9 +78,6 @@ const Profile = ({ isSelectedProfile, profile, onClick, setProfiles }) => {
                 profile.SERVER.port = port;
 
                 setProfiles((prev) => {
-                  // const newProfiles = [...prev];
-                  // newProfiles[index] = newProfile;
-                  // return newProfiles;
                   return [prev[0], { ...prev[1] }];
                 });
                 setEdit(false);

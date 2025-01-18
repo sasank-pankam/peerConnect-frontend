@@ -1,17 +1,27 @@
 import { useState, useEffect, useContext } from "react";
+import { useSetRecvRegistery } from "./utils/SetRecvRegistery.js";
 import ChatApp from "./components/ChatApp.jsx";
 import { useSocketWithHandshake } from "./components/WebSocketHandler.jsx";
 import {
   useWebSocket,
-  WebSocketContextProvider,
-} from "./contexts/WebSocketContextProvider";
+  WebSocketProvider,
+} from "./contexts/WebSocketContextProvider.jsx";
 import consts from "./Constants";
 import "./App.css";
 import ProfileWrapper from "./components/ProfileWrapper.jsx";
 import useGetProfiles, { sendProfiles } from "./utils/manageProfiles.js";
 import { dataSender } from "./utils/Sender.js";
-import { useUser } from "./contexts/UsersContextProvider.jsx";
+import { UsersProvider, useUser } from "./contexts/UsersContextProvider.jsx";
 import { useSocket } from "./utils/useSockets.js";
+import { Message } from "./utils/Message.js";
+import {
+  OwnershipProvider,
+  useOwner,
+} from "./contexts/OwnershipCContextProvider.jsx";
+import { InteractionProvider } from "./contexts/InteractionContextProvider.jsx";
+import { ActiveUserProvider } from "./contexts/ActitveUserContextProvider.jsx";
+import { MetaDataProvider } from "./contexts/MetadataContextProvider.jsx";
+import { UiStateProvider } from "./contexts/UiStateContextProvider.jsx";
 
 const useSessionEnd = () => {
   const [sessionEnd, setSessionEnd] = useState(false);
@@ -29,34 +39,30 @@ const EndSession = (sessionEnd, socket) => {
 };
 
 /**
- * @param {{ signalsSocket:WebSocket, sessionEnd: Boolean}} input
  * @returns {JSX.Element}
  */
-const LoadProfiles = ({ sessionEnd }) => {
+const LoadProfiles = () => {
   const [profiles, setProfiles] = useGetProfiles();
   const [msgId, profilesArray] = profiles;
 
-  /**
-   * @type {import("./contexts/WebSocketContextProvider.js").websocketContextValue}
-   */
   const { sender } = useWebSocket();
 
   /**
    * @type {import("./contexts/UsersContextProvider.jsx").UserContextValue}
    */
-  const { setOwner } = useUser();
+  const { setOwner } = useOwner();
 
   const [clicked, setClicked] = useState(false);
 
   const onClick = ({ selectedProfile, profiles }) => {
     setOwner(profiles[selectedProfile]);
-    profiles[selectedProfile].USER.selected = "true";
+    console.log("sending profiles", profiles);
     sendProfiles(profiles, selectedProfile, sender, msgId);
     setClicked(true);
   };
-  if (sessionEnd) {
-    return <div>Session Ended</div>;
-  }
+  // if (sessionEnd) {
+  //   return <div>Session Ended</div>;
+  // }
   return (
     <>
       {clicked ? (
@@ -77,30 +83,25 @@ const LoadingAnim = () => {
 };
 
 const App = () => {
-  const [sessionEnd, setSessionEnd] = useSessionEnd();
+  // const [sessionEnd, setSessionEnd] = useSessionEnd();
 
-  const {
-    signalsSocket,
-    messagesSocket,
-    registerHandler,
-    sender,
-    unRegisterHandler,
-  } = useSocket();
-
-  EndSession(sessionEnd, signalsSocket);
-
-  if (!(signalsSocket && messagesSocket)) return <LoadingAnim />;
-  if (sessionEnd) return <div>sessionEnded</div>;
+  // if (sessionEnd) return <div>sessionEnded</div>;
   return (
-    <WebSocketContextProvider
-      value={{
-        sender,
-        registerHandler,
-        unRegisterHandler,
-      }}
-    >
-      {signalsSocket && <LoadProfiles sessionEnd={sessionEnd} />}
-    </WebSocketContextProvider>
+    <WebSocketProvider>
+      <UsersProvider>
+        <OwnershipProvider>
+          <InteractionProvider>
+            <ActiveUserProvider>
+              <MetaDataProvider>
+                <UiStateProvider>
+                  <LoadProfiles />
+                </UiStateProvider>
+              </MetaDataProvider>
+            </ActiveUserProvider>
+          </InteractionProvider>
+        </OwnershipProvider>
+      </UsersProvider>
+    </WebSocketProvider>
   );
 };
 

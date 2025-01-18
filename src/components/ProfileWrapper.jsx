@@ -96,7 +96,14 @@ const ProfileWrapper = ({ clicked, profiles = {}, setProfiles }) => {
   const [selectedProfile, setSelectedProfile] = useState(null);
   useEffect(() => {
     const profileName = getSelectedProfileWithAttribute(profiles);
-    if (profileName) delete profiles[profileName].USER.selected;
+    if (profileName) {
+      setProfiles((prevProfiles) => {
+        const [id, currProfiles] = prevProfiles;
+        delete currProfiles[profileName].selected;
+        return [id, currProfiles];
+      });
+    }
+
     setSelectedProfile(profileName);
   }, [profiles]);
   return (

@@ -12,7 +12,7 @@ const recvHandler = (socket) => {
    * @param {Message} message
    */
   const defaultfunc = (message) => {
-    console.log(`Got ${message} in socket with ${url}`);
+    console.log(`Got ${JSON.stringify(message)} in socket with ${url}`);
   };
 
   const registery = new Map();
@@ -45,7 +45,6 @@ const recvHandler = (socket) => {
     const message = new Message();
 
     Object.assign(message, JSON.parse(event.data));
-
     processMessage(message);
   });
   return { addHandle, removeHandle };
@@ -70,6 +69,7 @@ export const recvRegistery = (messagesSocket, signalsSocket) => {
     [consts.SIGNALS, signals],
   ]);
   const registerHandler = (header, func) => {
+    console.log(`registerred ${header}!`);
     const type = Number(header[0]);
     const handler = socMap.get(type);
     handler.addHandle(header, func);

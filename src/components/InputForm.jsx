@@ -4,10 +4,11 @@ import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
 import { appendMF } from "../app/MessagesSlice";
 import { getMessage } from "../components/MessageBox";
-import { getFile } from "../components/FileBox";
 import { useDispatch } from "react-redux";
 import consts from "../Constants";
 import { parseMessage } from "../utils/actions";
+import { useActiveUser } from "../contexts/ActitveUserContextProvider";
+import { useInteraction } from "../contexts/InteractionContextProvider";
 
 // import FolderIcon from '@mui/icons-material/Folder';
 
@@ -28,11 +29,8 @@ const InputForm = () => {
   /**
    * @type {import('../contexts/UsersContextProvider').UserContextValue}
    */
-  const {
-    currentActiveUser /* , counts, setCounts */,
-    blockedYou,
-    youBlocked,
-  } = useUser();
+  const { blockedYou, youBlocked } = useInteraction();
+  const { currentActiveUser } = useActiveUser();
 
   const inpRef = useRef(null);
 
@@ -130,7 +128,14 @@ const InputForm = () => {
         <input
           onFocus={() => {
             if (isSent) return;
-            sender(new Message(consts.ActiveUser, "", currentActiveUser));
+            sender(
+              new Message(
+                consts.ActiveUser,
+                "",
+                currentActiveUser || null,
+                null,
+              ),
+            );
             setIsSent(true);
           }}
           ref={inpRef}
@@ -146,28 +151,3 @@ const InputForm = () => {
   );
 };
 export default InputForm;
-
-/* <button
-  className="down-icon"
-  style={{}}
-  onClick={(event) => {
-    event.preventDefault();
-    setIsBottom(true);
-
-    setCounts((prevCounts) => {
-      const newCounts = { ...prevCounts };
-      newCounts[currentActiveUser] = 0;
-      return newCounts;
-    });
-    const activeUserDiv = document.getElementById(
-      `chats-container-${currentActiveUser}`
-    );
-    activeUserDiv.scrollTop = activeUserDiv.scrollHeight;
-  }}
-  >
-  <img
-    src={DownIcon}
-    alt="down-icon"
-    style={{ display: isBottom ? "none" : "flex" }}
-  />
-  </button> */

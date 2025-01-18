@@ -19,9 +19,6 @@ const blockedStyle = {
 
 // eslint-disable-next-line react/prop-types
 const UserChatContainer = ({ id }) => {
-  /**
-   * @type {import('../contexts/UsersContextProvider').UserContextValue}
-   */
   const { currentPositions, setCurrentPositions, blockedYou, youBlocked } =
     useUser();
   const { sender } = useWebSocket();

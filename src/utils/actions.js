@@ -10,7 +10,7 @@ export const getSelectedProfileWithAttribute = (profiles) => {
   const res = Object.entries(profiles)
     .map((profile) => {
       const [key, config] = profile;
-      const hasSelected = config?.USER?.selected === "true";
+      const hasSelected = config?.selected === true;
       return hasSelected ? key : false;
     })
     .find((param) => Boolean(param));

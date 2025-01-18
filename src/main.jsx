@@ -9,9 +9,7 @@ import { UsersProvider } from "./contexts/UsersContextProvider.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <StrictMode>
   <Provider store={messagesStore}>
-    <UsersProvider>
-      <App />
-    </UsersProvider>
+    <App />
   </Provider>,
   // </StrictMode>
 );
