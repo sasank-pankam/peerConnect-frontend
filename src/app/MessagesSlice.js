@@ -1,78 +1,47 @@
 import { createSlice } from "@reduxjs/toolkit";
-import consts from "../Constants.js";
+import { AsyncDB } from "../utils/AsyncIndexedDB";
 
-/* 
-    state => 
-
-    {
-        Users:{
-            id: number -> messages: [
-                {
-                    content:
-                    // time:
-                    etc...
-                }
-            ]
-        }
-    }
-*/
-
-const initialState = {
-  Users: {},
-};
-
-export const messagesSlice = createSlice({
+const storeConfig = {
   name: "messages",
-  initialState,
+  keyPath: "messageId",
+  indices: {
+    name: "id_counter",
+    keyPath: ["userId", "identifier"],
+  },
+};
+const db = new AsyncDB("Message", storeConfig);
+const messagesSlice = createSlice({
+  name: "messages",
+  initialState: {
+    byUser: {},
+    loading: false,
+    error: null,
+  },
   reducers: {
-    appendMF: (state, action) => {
-      // console.log("appednde a message", action.payload.newMessage, action.payload.id, Math.random());
-      const newMessage = action.payload.newMessage;
-      const id = action.payload.id;
-      const user = state.Users[id];
-      if (user) {
-        user.push(newMessage);
-      } else {
-        state.Users[id] = [newMessage];
-      }
-      state.Users = { ...state.Users };
+    async loadMore(state, action) {
+      const { userId, identifier, count } = action.payload;
+      const messages = await db.getRange(
+        [userId, identifier],
+        [userId, identifier - count],
+      );
+      const prev = state.byUser[userId] | [];
+      const curr = [...messages, ...prev];
+      state.byUser[userId] = curr;
     },
-    loadMessages: (state, action) => {
-      const id = action.payload.ID;
-      const messages = action.payload.CONTENT;
-      // console.log("in loadMessages  -> ", id, messages);
-      const user = state.Users[id];
-      // console.log("user -> ", user);
-
-      if (user) {
-        user.unshift(...messages);
-      } else {
-        state.Users[id] = messages;
-      }
-      state.Users = { ...state.Users };
-      // console.log('updates messages');
-      // state.Users = {...state.Users};
+    async addMessage(state, action) {
+      const { userId, message } = action.payload;
+      if (!state.byUser[userId]) state.byUser[userId] = [];
+      state.byUser[userId].push(message);
+      await db.add(message);
     },
-    acceptedFile: (state, action) => {
-      const id = action.payload.id;
-      const fileId = action.payload.fileId;
-      const messages = state.Users[id];
-      state.Users[id] = messages.map((message) => {
-        if (message.type === consts.FILE_TYPE && message.id === fileId) {
-          message.accepted = true;
-        }
-        return message;
-      });
-      state.Users = { ...state.Users };
-      // addUser: (state, action) => {
-      //     const id = action.payload.id;
+    invalidateMessages(state, action) {
+      const { userId, count } = action.payload;
 
-      // },
+      state.byUser[userId] = state.byUser[userId].slice(count);
     },
   },
 });
 
-export const { appendMF, loadMessages, acceptedFile } = messagesSlice.actions;
-
+export const { loadMore, addMessage, invalidateMessages } =
+  messagesSlice.actions;
 export default messagesSlice.reducer;
-

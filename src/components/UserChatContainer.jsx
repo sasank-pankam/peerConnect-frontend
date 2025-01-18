@@ -8,6 +8,8 @@ import { dataSender } from "../utils/Sender";
 import consts from "../Constants";
 import { useInteraction } from "../contexts/InteractionContextProvider";
 import { debounce } from "../utils/actions";
+import { useDispatch } from "react-redux";
+import { invalidateMessages, loadMore } from "../app/MessagesSlice";
 
 const blockedStyle = {
   display: "flex",
@@ -22,14 +24,21 @@ const UserChatContainer = ({ id }) => {
   const { sender } = useWebSocket();
   const { blockedYou, youBlocked } = useInteraction();
 
+  const dispatch = useDispatch();
   const messageList = useSelector((state) => state.Users[id]) || [];
 
   const invalidateTopMessages = debounce(() => {
-    // logic to invalidate top messages
+    dispatch(invalidateMessages({ userId: id, count: 10 }));
   }, 12000);
 
   const loadMoreMessages = () => {
-    // logic to loadmoremessages
+    dispatch(
+      loadMore({
+        userId: id,
+        count: 20,
+        identifier: messageList[0].identifier,
+      }),
+    );
   };
 
   const handleMessagesScroll = debounce((event, bottom, height) => {

@@ -19,7 +19,7 @@ import { useWebSocket } from "../contexts/WebSocketContextProvider.jsx";
 
 const ActiveMembers = () => {
   const [searchValue, setSearchValue] = useState("");
-  const { users, userDetails } = useUser();
+  const { users, setUsers, userDetails } = useUser();
   const { isPinned } = useInteraction();
 
   const { registerHandler, unRegisterHandler } = useWebSocket();
@@ -34,7 +34,7 @@ const ActiveMembers = () => {
 
   const inputRef = useRef(null);
   // search functionality
-  const changeSearchValue = debounce(() => {
+  const changeSearchValue = debounce((e) => {
     setSearchValue(e.target.value);
   }, 200);
 
@@ -57,7 +57,9 @@ const ActiveMembers = () => {
       const target = event.target;
       const { scrollTop, scrollHeight, clientHeight } = target;
 
-      if (scrollTop + clientHeight >= scrollHeight - 1) {
+      if (scrollTop === 0) {
+        // add logic to remove peers
+      } else if (scrollTop + clientHeight >= scrollHeight - 1) {
         // send a get more peer list request to backend
       }
     }, 200),
