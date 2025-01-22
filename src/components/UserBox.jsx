@@ -54,7 +54,7 @@ const UserBox = ({ id: userId, userName, isPinned }) => {
             </svg>
           </div>
         )}
-        <div className="count">{counts[userId] !== 0 && counts[userId]}</div>
+        {/* <div className="count">{counts[userId] !== 0 && counts[userId]}</div> */}
       </div>
     </div>
   );

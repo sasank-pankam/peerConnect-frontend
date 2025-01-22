@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState, useRef } from "react";
+import { useContext, useMemo, useState, useRef, useCallback } from "react";
 import UserBox from "./UserBox";
 import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import Search from "../assets/search.jsx";
@@ -94,9 +94,9 @@ const ActiveMembers = () => {
       <div className="activemembers" id="scrollable">
         {sortedUsers.map((userId, index) => (
           <UserBox
-            id={peerId}
-            isPinned={isPinned.get(peerId)}
-            userName={userDetails[peerId].name}
+            id={userId}
+            isPinned={isPinned.get(userId)}
+            userName={userDetails[userId].name}
             key={index} // for react
           />
         ))}

@@ -1,6 +1,6 @@
 import React from "react";
 import ActiveMembers from "./ActiveMembers";
-import UserChatContainersWrapper from "./UserChatContainersWrapper";
+import ChatBoxWrapper from "./ChatBoxWrapper";
 import InputForm from "./InputForm";
 import ContextMenu from "./ContextMenu";
 
@@ -23,7 +23,7 @@ function MainLayout() {
           }}
         >
           <div className="main-chats-container" id="main-chats-container">
-            <UserChatContainersWrapper />
+            <ChatBoxWrapper />
           </div>
           <InputForm />
         </div>

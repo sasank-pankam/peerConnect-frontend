@@ -12,8 +12,15 @@ export const UsersContext = createContext();
  */
 
 export const UsersProvider = ({ children }) => {
-  const [users, setUsers] = useState([]);
-  const [userDetails, setUserDetails] = useState({});
+  const [users, setUsers] = useState([1, 2, 3, 4, 5, 6]);
+  const [userDetails, setUserDetails] = useState({
+    [1]: { name: "test-1" },
+    [2]: { name: "test-2" },
+    [3]: { name: "test-3" },
+    [4]: { name: "test-4" },
+    [5]: { name: "test-5" },
+    [6]: { name: "test-6" },
+  });
 
   const value = {
     users,

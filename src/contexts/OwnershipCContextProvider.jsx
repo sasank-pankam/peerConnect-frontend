@@ -6,7 +6,11 @@ const OwnershipContext = createContext();
  * @property {Function} setOwner - Function to update the owner.
  */
 export const OwnershipProvider = ({ children }) => {
-  const [owner, setOwner] = useState();
+  const [owner, setOwner] = useState({
+    USER: {
+      name: "some",
+    },
+  });
   const value = {
     owner,
     setOwner,

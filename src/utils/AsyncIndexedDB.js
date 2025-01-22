@@ -101,6 +101,10 @@ export class AsyncDB {
     });
   }
 
+  destroy() {
+    indexedDB.deleteDatabase(this.dbName);
+  }
+
   async count() {
     return this.withStore("readonly", (store, resolve) => {
       const request = store.count();

@@ -1,10 +1,10 @@
 import consts from "../Constants";
+
 const MessageBox = ({ Message }) => {
-  const { content, isSender } = Message;
-  let now = new Date();
+  const { content, isSender, time } = Message;
+  let now = new Date(time);
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
-  now = null;
   const final_content = `<div class="message-content">${content}<span class="time">${currentHour}:${currentMinute}</span></div>`;
   return (
     <div
@@ -24,10 +24,14 @@ const MessageBox = ({ Message }) => {
 
 export default MessageBox;
 
-export const getMessage = (content, extraProps) => {
+export const getMessage = (content, id, userId, extraProps) => {
   return {
+    type: consts.TYPE_MESSAGE,
     content,
-    type: consts.MESSAGE_TYPE,
+    id,
+    time: new Date().toUTCString(),
+    userId,
+    isSender: false,
     ...extraProps,
   };
 };

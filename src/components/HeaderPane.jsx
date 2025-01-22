@@ -14,7 +14,7 @@ function HeaderPane() {
   const { currentActiveUser } = useActiveUser();
   return (
     <div className="header-container">
-      <div className="my-user-name">{owner.USER.name}</div>
+      <div className="my-user-name">{owner?.USER.name}</div>
       <div className="current-username">
         {currentActiveUser !== null && userDetails[currentActiveUser]?.name}
       </div>

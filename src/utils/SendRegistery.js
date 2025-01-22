@@ -8,7 +8,12 @@ import consts from "../Constants";
  */
 export const sendRegistery = (messagesSocket, signalsSocket) => {
   if (!(messagesSocket && signalsSocket)) {
-    return null;
+    return (message) => {
+      console.log(
+        "not sending message but this gets sent when connnected.",
+        message,
+      );
+    };
   }
   const messagesSender = dataSender(messagesSocket, { name: "MESSAGES" });
   const signalSSender = dataSender(signalsSocket, { name: "SIGNALS" });

@@ -1,16 +1,14 @@
-import { useContext, useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Message } from "../utils/Message";
-import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
-import { appendMF } from "../app/MessagesSlice";
-import { getMessage } from "../components/MessageBox";
+import { addMessage } from "../app/Slice";
+import { getMessage } from "./MessageBox";
 import { useDispatch } from "react-redux";
 import consts from "../Constants";
 import { parseMessage } from "../utils/actions";
 import { useActiveUser } from "../contexts/ActitveUserContextProvider";
 import { useInteraction } from "../contexts/InteractionContextProvider";
-
-// import FolderIcon from '@mui/icons-material/Folder';
+import { useCounter } from "../contexts/IdCounterContextProvider";
 
 const useCleanInput = (inpRef, currentActiveUser, setIsSent) => {
   useEffect(() => {
@@ -24,61 +22,42 @@ const useCleanInput = (inpRef, currentActiveUser, setIsSent) => {
 const InputForm = () => {
   const dispatch = useDispatch();
   const { sender } = useWebSocket();
-  const [isSent, setIsSent] = useState(false);
+  const { counter } = useCounter();
+  const [isUpdateSent, setIsUpdateSent] = useState(false);
 
-  /**
-   * @type {import('../contexts/UsersContextProvider').UserContextValue}
-   */
   const { blockedYou, youBlocked } = useInteraction();
   const { currentActiveUser } = useActiveUser();
 
   const inpRef = useRef(null);
 
-  useCleanInput(inpRef, currentActiveUser, setIsSent);
+  useCleanInput(inpRef, currentActiveUser, setIsUpdateSent);
 
   const triggerDirectoryChange = (event) => {
     event.preventDefault();
-    sender(new Message(consts.COMMAND, consts.SEND_FILE, currentActiveUser));
+    // trigger directory send
   };
   const triggerSendFile = (event) => {
     event.preventDefault();
-    sender(new Message(consts.COMMAND, consts.SEND_FILE, currentActiveUser));
+    // trigger file send
   };
   const handleSubmit = (event) => {
     event.preventDefault();
     let message = String(event.target[0].value);
     event.target[0].value = "";
     if (message === "") return;
-    if (message.length > 6 && message.substring(0, 6) === "file::") {
-      sender(
-        new Message(consts.NEW_FILE, message.substring(6), currentActiveUser),
-      );
-      // dispatch(
-      //     appendMF({
-      //         newMessage: getFile({
-      //             name: message,
-      //             isSender: true,
-      //             id: '',
-      //             size: "0",
-      //             ext: "null",
-      //         }),
-      //         id: currentActiveUser,
-      //     }),
-      // ); // for appending message to chat container
-
-      return;
-    }
     message = parseMessage(message);
-    sender(new Message(consts.NEW_MESSAGE, message, currentActiveUser));
 
-    // console.log("sent message");
+    sender(new Message("1temp", message, currentActiveUser, null));
+
     dispatch(
-      appendMF({
-        newMessage: getMessage(message, { isSender: true }),
-        id: currentActiveUser,
+      addMessage({
+        userId: currentActiveUser,
+
+        message: getMessage(message, counter(), currentActiveUser, {
+          isSender: true,
+        }),
       }),
-    ); // for appending message to chat container
-    // console.log("appending message");
+    );
   };
 
   if (
@@ -127,7 +106,7 @@ const InputForm = () => {
         </div>
         <input
           onFocus={() => {
-            if (isSent) return;
+            if (isUpdateSent) return;
             sender(
               new Message(
                 consts.ActiveUser,
@@ -136,7 +115,7 @@ const InputForm = () => {
                 null,
               ),
             );
-            setIsSent(true);
+            setIsUpdateSent(true);
           }}
           ref={inpRef}
           type="text"

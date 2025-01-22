@@ -57,6 +57,5 @@ export const dataSender = (websocket, props = {}) => {
       console.log(`unable to send a message: ${contentToSend}`);
     }
   };
-
   return websocket ? sendContent : null;
 };

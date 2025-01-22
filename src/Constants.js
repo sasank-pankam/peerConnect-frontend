@@ -50,7 +50,11 @@ export default {
   UNBLOCKED: "unblocked me",
   UNBLOCK: "unblock",
 
-  MESSAGE_TYPE: 2,
-  FILE_TYPE: 1,
-  NULL_TYPE: 0,
+  TYPE_MESSAGE: 1,
+  TYPE_TRANSFER: 2,
+  TYPE_NULL: 0,
+
+  SUB_TR_FILE: 0,
+  SUB_TR_MUL_FILE: 0,
+  SUB_TR_DIR: 0,
 };
