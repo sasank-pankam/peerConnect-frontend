@@ -35,36 +35,4 @@ const App = () => {
   );
 };
 
-const test = () => {
-  const [lis, setLis] = useState([9, 8, 7, 6, 5, 4, 3, 2, 1]);
-  console.log("sodi");
-  return (
-    <>
-      <div onClick={() => setLis([lis[0] + 1, ...lis])}> add</div>
-      <AutoSizer
-        style={{
-          height: "100vh",
-          width: "100vw",
-          backgroundColor: "red",
-        }}
-      >
-        {({ height, width }) => {
-          return (
-            <FixedSizeList
-              height={height}
-              width={width}
-              itemCount={lis.length}
-              itemSize={50}
-              initialScrollOffset={lis.length * 50}
-            >
-              {({ index, style }) => {
-                return <div style={style}> item - {lis[index]} </div>;
-              }}
-            </FixedSizeList>
-          );
-        }}
-      </AutoSizer>
-    </>
-  );
-};
 export default App;
