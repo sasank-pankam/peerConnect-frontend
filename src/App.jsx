@@ -12,8 +12,43 @@ import { UiStateProvider } from "./contexts/UiStateContextProvider.jsx";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList } from "react-window";
 import { useState } from "react";
+import { Directory } from "./components/TransferBox/Directory.jsx";
+
+const testMessage = {
+  time: new Date().toUTCString(),
+  isSender: true,
+  content: {
+    name: "parent -1",
+    items: {
+      name: "parent - 1",
+      files: [
+        { name: "file-1", percentage: 50 },
+        { name: "file-2", percentage: 60 },
+      ],
+      directories: [
+        {
+          name: "subdir -1",
+          files: [],
+          directories: [
+            {
+              name: "subdir-2",
+              files: [{ name: ".gitkeep", percentage: 100 }],
+              directories: [],
+            },
+          ],
+        },
+        {
+          name: "subdir-3",
+          files: [],
+          directories: [{ name: "empty dir", files: [], directories: [] }],
+        },
+      ],
+    },
+  },
+};
 
 const App = () => {
+  const [mess, setMess] = useState(testMessage);
   return (
     <WebSocketProvider>
       <IdCounterProvider>
@@ -23,7 +58,7 @@ const App = () => {
               <ActiveUserProvider>
                 <MetaDataProvider>
                   <UiStateProvider>
-                    <Start />
+                    <Directory setMess={setMess} Messsage={mess} />
                   </UiStateProvider>
                 </MetaDataProvider>
               </ActiveUserProvider>
@@ -36,3 +71,4 @@ const App = () => {
 };
 
 export default App;
+// <Start />

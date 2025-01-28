@@ -377,3 +377,7 @@ p label:first-child {
   justify-content: center;
   align-items: center;
 }
+
+.hover-gray:hover {
+  background-color: lightgray;
+}
