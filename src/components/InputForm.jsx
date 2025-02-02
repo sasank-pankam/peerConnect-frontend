@@ -19,6 +19,8 @@ const useCleanInput = (inpRef, currentActiveUser, setIsSent) => {
   }, [currentActiveUser, inpRef]);
 };
 
+let flag = false;
+
 const InputForm = () => {
   const dispatch = useDispatch();
   const { sender } = useWebSocket();
@@ -59,6 +61,23 @@ const InputForm = () => {
       }),
     );
   };
+
+  if (currentActiveUser == 5 && flag === false) {
+    for (let i = 0; i < 200; i++) {
+      setTimeout(() => {
+        dispatch(
+          addMessage({
+            userId: currentActiveUser,
+
+            message: getMessage(`test - ${i}`, counter(), currentActiveUser, {
+              isSender: true,
+            }),
+          }),
+        );
+      }, i * 1000);
+    }
+    flag = true;
+  }
 
   if (
     currentActiveUser === null ||

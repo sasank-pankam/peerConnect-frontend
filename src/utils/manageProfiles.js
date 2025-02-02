@@ -29,7 +29,19 @@ Array.from(socket);
 */
 
 const useGetProfiles = () => {
-  const [profiles, setProfiles] = useState([]);
+  const [profiles, setProfiles] = useState([
+    10,
+    {
+      saka: {
+        USER: { name: "saka" },
+        SERVER: {
+          ip: "1.1.1.1",
+          port: "2020",
+        },
+      },
+    },
+    ["wlan0", "lo", "enp0", "test"],
+  ]);
   const { sender, registerHandler, unRegisterHandler } = useWebSocket();
   const extractAndSetProfiles = (message) => {
     const profilesArray = message.content;

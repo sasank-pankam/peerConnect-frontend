@@ -1,29 +1,40 @@
 import { useState } from "react";
+import { Popup } from "./PopUp.jsx";
 import { useWebSocket } from "../contexts/WebSocketContextProvider.jsx";
 import { useOwner } from "../contexts/OwnershipCContextProvider.jsx";
 import Profile from "./Profile.jsx";
 import { useEffect } from "react";
 import { getSelectedProfileWithAttribute } from "../utils/actions.js";
 import useGetProfiles from "../utils/manageProfiles.js";
+import { sendProfiles } from "../utils/manageProfiles.js";
 
 import {
-  askProfile,
   askAndAddProfile,
   askAndRemoveProfile,
 } from "../utils/ProfileMutations.js";
+import { InterFacePicker } from "./Interfaces.jsx";
 
+const PROFILESINDEX = 1;
 const LoadProfiles = ({ setClicked }) => {
   const [profiles, setProfiles] = useGetProfiles();
-  const [msgId, profilesArray] = profiles;
+  const [msgId, profilesArray, interfacesArray] = profiles;
   const [selectedProfile, setSelectedProfile] = useState(null);
+
+  const [hasInterface, setHasInterface] = useState(null);
 
   useEffect(() => {
     const profileName = getSelectedProfileWithAttribute(profilesArray);
     if (profileName) {
       setProfiles((prevProfiles) => {
-        const [id, currProfiles] = prevProfiles;
+        const currProfiles = prevProfiles[PROFILESINDEX]; // position of profiles array [ id, profiles, interfaces ]
         delete currProfiles[profileName].selected;
-        return [id, currProfiles];
+        setHasInterface(() => {
+          if ("ifName" in currProfiles[profileName].SERVER) {
+            return true;
+          }
+          return false;
+        });
+        return [...prevProfiles];
       });
     }
     setSelectedProfile(profileName);
@@ -33,10 +44,14 @@ const LoadProfiles = ({ setClicked }) => {
 
   const { setOwner } = useOwner();
 
-  const onClick = ({ selectedProfile, profiles }) => {
-    setOwner(profiles[selectedProfile]);
-    console.log("sending profiles", profiles);
-    sendProfiles(profiles, selectedProfile, sender, msgId);
+  const clicked = ({ selectedProfile, profilesArray }) => {
+    setOwner(profilesArray[selectedProfile]);
+    if (!("ifName" in profilesArray[selectedProfile].SERVER)) {
+      setHasInterface(false);
+      return;
+    }
+    console.log("sending profiles", profilesArray);
+    sendProfiles(profilesArray, selectedProfile, sender, msgId);
     setClicked(true);
   };
 
@@ -58,40 +73,48 @@ const LoadProfiles = ({ setClicked }) => {
               />
             );
           })}
-      </div>
-      <div className="w-full flex flex-col gap-4 justify-center items-center h-full">
-        <div className="profile-controls flex gap-10 justify-center items-center">
-          <div
-            onClick={() => askAndAddProfile(setProfiles)}
-            className="add cursor-pointer"
-          >
-            Add
+        <Popup isOpen={hasInterface === false} onClose={() => null}>
+          <InterFacePicker
+            interfaces={interfacesArray}
+            setHasInterfaces={setHasInterface}
+            profile={profilesArray[selectedProfile]}
+            setClicked={setClicked}
+          />
+        </Popup>
+        <div className="w-full flex flex-col gap-4 justify-center items-center h-full">
+          <div className="profile-controls flex gap-10 justify-center items-center">
+            <div
+              onClick={() => askAndAddProfile(setProfiles)}
+              className="add cursor-pointer"
+            >
+              Add
+            </div>
+            <div
+              onClick={() => {
+                askAndRemoveProfile(selectedProfile, setProfiles);
+                setSelectedProfile(null);
+              }}
+              className="remove cursor-pointer"
+            >
+              Remove
+            </div>
           </div>
-          <div
-            onClick={() => {
-              askAndRemoveProfile(selectedProfile, setProfiles);
-              setSelectedProfile(null);
-            }}
-            className="remove cursor-pointer"
-          >
-            Remove
-          </div>
-        </div>
-        <div className="flex justify-center">
-          <div
-            className="flex justify-center items-center px-5 py-2 bg-gray-300 rounded-2xl w-fit cursor-pointer"
-            onClick={() => {
-              if (!selectedProfile) {
-                alert("select a profile");
-                return;
-              }
-              clicked({
-                selectedProfile,
-                profilesArray,
-              });
-            }}
-          >
-            proceed
+          <div className="flex justify-center">
+            <div
+              className="flex justify-center items-center px-5 py-2 bg-gray-300 rounded-2xl w-fit cursor-pointer"
+              onClick={() => {
+                if (!selectedProfile) {
+                  alert("select a profile");
+                  return;
+                }
+                clicked({
+                  selectedProfile,
+                  profilesArray,
+                });
+              }}
+            >
+              proceed
+            </div>
           </div>
         </div>
       </div>

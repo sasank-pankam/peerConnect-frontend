@@ -108,6 +108,9 @@ const slice = createSlice({
       .addCase(addMessage.fulfilled, (state, action) => {
         const { userId, message } = action.payload;
         if (!state.byUser[userId]) state.byUser[userId] = [];
+        if (state.byUser[userId].lenght > 30)
+          state.byUser[userId] = state.byUser[userId].slice(10);
+
         state.byUser[userId].push(message);
         state.loading = false;
       })

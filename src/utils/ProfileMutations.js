@@ -21,6 +21,8 @@ const configSanitizer = {
   },
 };
 
+const PROFILESINDEX = 1;
+
 export const askProfile = () => {
   try {
     return {
@@ -46,22 +48,18 @@ const serverThings = ["ip", "port"];
 
 export const askAndAddProfile = (setProfiles) => {
   const profile = askProfile();
-  // console.log(profile);
   if (!profile) return;
-  setProfiles((prev) => [
-    prev[0],
-    {
-      ...prev[1],
-      [`${Date.now()}`]: {
-        USER: Object.fromEntries(
-          userThings.map((item) => [item, profile[item]]),
-        ),
-        SERVER: Object.fromEntries(
-          serverThings.map((item) => [item, profile[item]]),
-        ),
-      },
-    },
-  ]);
+  setProfiles((prev) => {
+    const profiles = prev[PROFILESINDEX];
+    profiles[`${Date.now()}`] = {
+      USER: Object.fromEntries(userThings.map((item) => [item, profile[item]])),
+      SERVER: Object.fromEntries(
+        serverThings.map((item) => [item, profile[item]]),
+      ),
+    };
+
+    return [...prev];
+  });
 };
 
 export const askAndRemoveProfile = (selectedProfile, setProfiles) => {
@@ -69,15 +67,11 @@ export const askAndRemoveProfile = (selectedProfile, setProfiles) => {
     alert("select a profile");
     return;
   }
-  // const index = selectedProfile - 1;
-  // setProfiles((prev) => {
-  //   return prev.filter((_, ind) => {
-  //     return !(ind === index);
-  //   });
-  // });
+
   setProfiles((prev) => {
-    const newProfiles = { ...prev[1] };
-    delete newProfiles[selectedProfile];
-    return [prev[0], newProfiles];
+    const profiles = prev[PROFILESINDEX];
+
+    delete profiles[selectedProfile];
+    return [...prev];
   });
 };

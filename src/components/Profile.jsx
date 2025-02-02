@@ -20,8 +20,6 @@ const Profile = ({ isSelectedProfile, profile, onClick, setProfiles }) => {
     >
       {edit ? (
         <form
-          // onSubmit={(event) => {
-          // }}
           action=""
           onClick={(event) => {
             event.preventDefault();
@@ -111,6 +109,10 @@ const Profile = ({ isSelectedProfile, profile, onClick, setProfiles }) => {
             </p>
             <p>
               <label>Server Port:</label> <label>{profile.SERVER.port}</label>
+            </p>
+            <p>
+              <label>Interface Name: </label>
+              <label>{profile.SERVER.ifName}</label>
             </p>
           </div>
           <div

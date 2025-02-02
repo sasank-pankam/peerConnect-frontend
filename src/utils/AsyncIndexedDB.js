@@ -94,13 +94,6 @@ export class AsyncDB {
     });
   }
 
-  async delete(key) {
-    return this.withStore("readwrite", (store, resolve) => {
-      store.delete(key);
-      resolve();
-    });
-  }
-
   destroy() {
     indexedDB.deleteDatabase(this.dbName);
   }

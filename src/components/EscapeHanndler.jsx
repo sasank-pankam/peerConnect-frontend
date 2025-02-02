@@ -11,7 +11,7 @@ class EscapeHandler {
         event.key === "Esc" ||
         event.keyCode === 27
       ) {
-        this.stack[this.stack.length - 1]();
+        if (this.stack.length !== 0) this.stack[this.stack.length - 1]();
       }
     };
     document.addEventListener("keydown", this.setfunc);
