@@ -3,7 +3,7 @@ name: Update Webpage in Target Repo
 on:
   push:
     branches:
-      - 'github/action/test'
+      - 'main'
 
 jobs:
   build-and-deploy:
