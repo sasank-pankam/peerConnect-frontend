@@ -1,0 +1,61 @@
+name: Update Webpage in Target Repo
+
+on:
+  push:
+    branches:
+      - github/actiton/test
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the source repository
+      - name: Checkout source repo
+        uses: actions/checkout@v4
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22 # Replace with the Node.js version your project uses
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Build the project
+      - name: Build project
+        run: npm run build # Replace with your build command (e.g., `vite build`)
+
+      # Check out the target repository
+      - name: Checkout target repo
+        uses: actions/checkout@v4
+        with:
+          repository: sasank-pankam/PeerConnect # Replace with your repository
+          token: ${{ secrets.TARGET_REPO_TOKEN }}
+          path: target-repo
+
+      # Copy the build files to the target directory
+      - name: Copy build files
+        run: |
+          rm -rf target-repo/webpage/*  # Clear the target directory
+          cp -r dist/* target-repo/webpage/  # Copy build files to the target directory
+
+      # Commit and push changes to the target repository (main branch)
+      - name: Commit and push changes to main
+        run: |
+          cd target-repo
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Update webpage from source repo"
+          git push origin main
+
+      # Commit and push changes to the target repository (master branch)
+      - name: Commit and push changes to master
+        run: |
+          cd target-repo
+          git checkout -b master  # Switch to the master branch
+          git merge main --no-ff  # Merge changes from main into master
+          git push origin master  # Push changes to the master branch
