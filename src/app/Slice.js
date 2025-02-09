@@ -86,23 +86,19 @@ const slice = createSlice({
     builder
       // Handle loadMore
       .addCase(loadMore.pending, (state) => {
-        state.loading = true;
         state.error = null;
       })
       .addCase(loadMore.fulfilled, (state, action) => {
         const { userId, messages } = action.payload;
         const prev = state.byUser[userId] || [];
         state.byUser[userId] = [...messages, ...prev];
-        state.loading = false;
       })
       .addCase(loadMore.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
       })
 
       // Handle addMessage
       .addCase(addMessage.pending, (state) => {
-        state.loading = true;
         state.error = null;
       })
       .addCase(addMessage.fulfilled, (state, action) => {
@@ -112,10 +108,8 @@ const slice = createSlice({
           state.byUser[userId] = state.byUser[userId].slice(10);
 
         state.byUser[userId].push(message);
-        state.loading = false;
       })
       .addCase(addMessage.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
       });
   },

@@ -63,7 +63,7 @@ const InputForm = () => {
   };
 
   if (currentActiveUser == 5 && flag === false) {
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 50; i++) {
       setTimeout(() => {
         dispatch(
           addMessage({
