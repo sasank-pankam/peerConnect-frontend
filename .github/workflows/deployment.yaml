@@ -3,7 +3,7 @@ name: Deploy to Another Repo
 on:
   push:
     branches:
-      - test
+      - main
 
 jobs:
   build-and-deploy:
@@ -31,14 +31,12 @@ jobs:
           cd target-repo
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-      - name: Setup environment
-        run: |
-          ls src/webpage || mkdir src/webpage
 
       - name: Copy Build Files
         run: |
 
           rm -rf target-repo/src/webpage/*
+          mkdir target-repo/src/webpage -p
           cp -r dist/* target-repo/src/webpage/
 
       - name: Push Changes to Target Repo
@@ -46,4 +44,4 @@ jobs:
           cd target-repo
           git add .
           git commit -m "Deploy updated build from test branch"
-          git push https://x-access-token:${{ secrets.TARGET_REPO_TOKEN }}@github.com/YOUR_USERNAME/YOUR_TARGET_REPO.git main
+          git push https://${{ secrets.TARGET_REPO_TOKEN }}@github.com/sasank-pankam/PeerConnect.git actions-test
