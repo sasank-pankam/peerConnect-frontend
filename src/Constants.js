@@ -4,8 +4,8 @@ export default {
   ActiveUser: "1change in activeuser",
   SYNC_USERS: "sync-users",
   // IP: "172.16.197.166",
-  // IP: "172.16.196.238",
-  IP: "127.0.0.1",
+  IP: "172.16.192.253",
+  // IP: "127.0.0.1",
   // ALT_IP: "127.0.0.5",
   SIGNALS_PORT: 12260,
   CHANGED_PROFILE_LIST: "1this is a profiles list",
@@ -14,8 +14,8 @@ export default {
   CONTENT: "content",
   ID: "id",
 
-  SIGNALS: 0x01,
-  MESSAGES: 0x00,
+  SIGNALS: "1",
+  MESSAGES: "0",
 
   COMMAND: "COMMAND",
   SUBHEADER: "SUBHEADER",

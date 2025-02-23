@@ -43,7 +43,7 @@ const recvHandler = (socket) => {
 
   socket.addEventListener("message", (event) => {
     const message = new Message();
-
+    console.log(message);
     Object.assign(message, JSON.parse(event.data));
     processMessage(message);
   });
@@ -70,13 +70,13 @@ export const recvRegistery = (messagesSocket, signalsSocket) => {
   ]);
   const registerHandler = (header, func) => {
     console.log(`registerred ${header}!`);
-    const type = Number(header[0]);
+    const type = header[0];
     const handler = socMap.get(type);
     handler.addHandle(header, func);
   };
 
   const unRegisterHandler = (header) => {
-    const type = Number(header[0]);
+    const type = header[0];
     const handler = socMap.get(type);
     handler.removeHandle(header);
   };

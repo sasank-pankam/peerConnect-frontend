@@ -25,6 +25,12 @@ const LoadProfiles = ({ setClicked }) => {
       setProfiles((prevProfiles) => {
         const currProfiles = prevProfiles[PROFILESINDEX]; // position of profiles array [ id, profiles, interfaces ]
         delete currProfiles[profileName].selected;
+        setHasInterface(() => {
+          if ("ifName" in currProfiles[profileName].SERVER) {
+            return true;
+          }
+          return false;
+        });
         return [...prevProfiles];
       });
     }

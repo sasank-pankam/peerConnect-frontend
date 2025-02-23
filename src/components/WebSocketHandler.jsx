@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import { UsersContext } from "../contexts/UsersContextProvider";
+import { useState } from "react";
 
 /**
  * @param {string} url - The WebSocket URL to connect to.
@@ -10,17 +9,14 @@ export const useSocketWithHandshake = (url, initial = () => { }) => {
   const [socket, setSocket] = useState(() => {
     const webSocket = new WebSocket(url);
 
-    // let name = "";
-
     webSocket.addEventListener("open", () => {
-      // name = initial(webSocket);
       initial(webSocket);
       setSocket(webSocket);
     });
 
-    // webSocket.addEventListener("close", () => {
-    //   console.log(`connection closed ${name}`);
-    // });
+    webSocket.addEventListener("close", () => {
+      console.log(`connection closed ${name}`);
+    });
 
     return webSocket;
   });

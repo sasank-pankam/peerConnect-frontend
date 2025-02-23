@@ -27,7 +27,7 @@ export const sendRegistery = (messagesSocket, signalsSocket) => {
    * @param {import('./Message').Message} message
    */
   const messageSender = (message) => {
-    const type = Number(message.header[0]);
+    const type = message.header[0];
     const sender = senderMap.get(type);
 
     sender(message);

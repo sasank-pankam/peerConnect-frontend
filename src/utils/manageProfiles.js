@@ -26,10 +26,8 @@ import { Message } from "./Message";
 
 old method
 Array.from(socket);
-*/
 
-const useGetProfiles = () => {
-  const [profiles, setProfiles] = useState([
+default conf = [
     10,
     {
       saka: {
@@ -42,11 +40,26 @@ const useGetProfiles = () => {
       },
     },
     ["wlan0", "lo", "enp0", "test"],
-  ]);
+  ]
+
+
+res = {
+  content : {
+    "name"
+    "ifname"
+    "id"
+  }
+}
+
+*/
+
+const useGetProfiles = () => {
+  const [profiles, setProfiles] = useState([null, {}, []]);
   const { sender, registerHandler, unRegisterHandler } = useWebSocket();
   const extractAndSetProfiles = (message) => {
     const profilesArray = message.content;
-    setProfiles([message.msgId, profilesArray]);
+    const interfaces = message.interfaces;
+    setProfiles([message.msgId, profilesArray, interfaces]);
     unRegisterHandler(consts.CHANGED_PROFILE_LIST);
   };
 
