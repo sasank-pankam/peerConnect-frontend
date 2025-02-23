@@ -3,11 +3,11 @@ import { FixedSizeList } from "react-window";
 import { useSelector } from "react-redux";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
 import { useInteraction } from "../contexts/InteractionContextProvider";
-import { debounce } from "../utils/actions";
 import { useDispatch } from "react-redux";
 import { invalidateMessages, loadMore } from "../app/Slice";
 import ItemBox from "./ItemBox";
-import { createRef, useEffect } from "react";
+import { createRef, useEffect, useRef } from "react";
+import { useDebounce } from "../utils/Debounce";
 
 const blockedStyle = {
   display: "flex",
@@ -18,16 +18,14 @@ const blockedStyle = {
 };
 
 const ChatBox = ({ id }) => {
-  const { sender } = useWebSocket();
   const { blockedYou, youBlocked } = useInteraction();
-
-  const scrollRef = createRef();
+  const scrollRef = useRef();
 
   const dispatch = useDispatch();
   const messageList = useSelector((state) => state.byUser[id]) || [];
 
-  const invalidateTopMessages = debounce(() => {
-    dispatch(invalidateMessages({ userId: id, count: 10 }));
+  const invalidateTopMessages = useDebounce((userId, count) => {
+    dispatch(invalidateMessages({ userId, count }));
   }, 12000);
 
   const loadMoreMessages = () => {
@@ -41,23 +39,22 @@ const ChatBox = ({ id }) => {
     );
   };
 
-  const handleMessagesScroll = debounce((event, bottom, height) => {
+  const handleMessagesScroll = useDebounce((event, bottom, height) => {
     const { scrollOffset } = event;
     if (scrollOffset === 0) {
       loadMoreMessages();
     } else if (scrollOffset + height === bottom) {
-      invalidateTopMessages();
+      invalidateTopMessages(id, 10);
     }
   }, 200);
 
   useEffect(() => {
-    // console.log(scrollRef.current);
+    console.log("scrolling");
     scrollRef.current?.scrollToItem(messageList.length - 1);
-  }, [messageList]);
+  }, [messageList, id]);
 
   return (
     <div
-      key={id}
       style={{
         width: "100%",
         height: "100%",

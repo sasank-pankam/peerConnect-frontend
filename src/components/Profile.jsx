@@ -1,14 +1,36 @@
+import { useRef } from "react";
 import { useState } from "react";
 
-/**
- * @param {Boolean} isSelectedProfile
- * @param {Boolean} selectedProfile
- * @param {Object} profiles
- * @param {() => void} onClick
- * @param {() => void} setProfiles
- */
-const Profile = ({ isSelectedProfile, profile, onClick, setProfiles }) => {
+const CustomInput = ({ labelName, name, defaultValue }) => {
+  return (
+    <p>
+      <label>{labelName}:</label>
+      <input
+        className="bg-transparent "
+        name={name}
+        defaultValue={defaultValue}
+      />
+    </p>
+  );
+};
+
+const CustomLabel = ({ labelName, value }) => {
+  return (
+    <p>
+      <label>{labelName}:</label> <label>{value}</label>
+    </p>
+  );
+};
+
+const Profile = ({
+  isSelectedProfile,
+  profile,
+  interfaces,
+  onClick,
+  setProfiles,
+}) => {
   const [edit, setEdit] = useState(false);
+  const formRef = useRef(null);
   return (
     <div
       onClick={onClick}
@@ -26,31 +48,37 @@ const Profile = ({ isSelectedProfile, profile, onClick, setProfiles }) => {
             event.stopPropagation();
           }}
           className="profile-card"
+          ref={formRef}
         >
           <div>
+            <CustomInput
+              name={"name"}
+              defaultValue={profile.USER.name}
+              labelName={"Visible Name"}
+            />
+            <CustomInput
+              name={"ip"}
+              defaultValue={profile.SERVER.ip}
+              labelName={"Server Ip"}
+            />
+
+            <CustomInput
+              name={"port"}
+              defaultValue={profile.SERVER.port}
+              labelName={"Server Port"}
+            />
             <p>
-              <label>Visible Name:</label>
-              <input
-                className="bg-transparent "
-                name="name"
-                defaultValue={profile.USER.name}
-              />
-            </p>
-            <p>
-              <label>Server Ip:</label>{" "}
-              <input
-                name="ip"
-                className="bg-transparent "
-                defaultValue={profile.SERVER.ip}
-              />
-            </p>
-            <p>
-              <label>Server Port:</label>{" "}
-              <input
-                name="port"
-                className="bg-transparent "
-                defaultValue={profile.SERVER.port}
-              />
+              <label>Interface Name: </label>
+              <select name="ifname" id="bg-transparent">
+                <option value="">Select</option>
+                {interfaces.map((ifName, index) => {
+                  return (
+                    <option value={ifName} key={index}>
+                      {ifName}
+                    </option>
+                  );
+                })}
+              </select>
             </p>
           </div>
 
@@ -67,16 +95,22 @@ const Profile = ({ isSelectedProfile, profile, onClick, setProfiles }) => {
               }}
               type="submit"
               onClick={() => {
-                const name = document.getElementsByName("name")[0].value;
-                const ip = document.getElementsByName("ip")[0].value;
-                const port = document.getElementsByName("port")[0].value;
+                const formElement = formRef.current;
+                const name =
+                  formElement.querySelectorAll('[name="name"]')[0].value;
+                const ip = formElement.querySelectorAll('[name="ip"]')[0].value;
+                const port =
+                  formElement.querySelectorAll('[name="port"]')[0].value;
+                const iface =
+                  formElement.querySelectorAll('[name="ifname"]')[0].value;
 
                 profile.USER.name = name;
                 profile.SERVER.ip = ip;
                 profile.SERVER.port = port;
+                profile.SERVER.ifName = iface;
 
                 setProfiles((prev) => {
-                  return [prev[0], { ...prev[1] }];
+                  return [...prev];
                 });
                 setEdit(false);
               }}
@@ -94,26 +128,17 @@ const Profile = ({ isSelectedProfile, profile, onClick, setProfiles }) => {
           className="profile-card"
         >
           <div>
-            <p>
-              <label>Visible Name:</label> <label>{profile.USER.name}</label>
-            </p>
-            <p>
-              <label>Server Ip:</label>{" "}
-              <label
-                style={{
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {profile.SERVER.ip}
-              </label>
-            </p>
-            <p>
-              <label>Server Port:</label> <label>{profile.SERVER.port}</label>
-            </p>
-            <p>
-              <label>Interface Name: </label>
-              <label>{profile.SERVER.ifName}</label>
-            </p>
+            <CustomLabel labelName={"Visible Name"} value={profile.USER.name} />
+            <CustomLabel labelName="Server Ip" value={profile.SERVER.ip} />
+            <CustomLabel labelName="Server Port" value={profile.SERVER.port} />
+            <CustomLabel
+              labelName="Interface Name"
+              value={
+                interfaces.includes(profile.SERVER.ifName)
+                  ? profile.SERVER.ifName
+                  : "Select"
+              }
+            />
           </div>
           <div
             style={{

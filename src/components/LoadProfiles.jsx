@@ -12,7 +12,6 @@ import {
   askAndAddProfile,
   askAndRemoveProfile,
 } from "../utils/ProfileMutations.js";
-import { InterFacePicker } from "./Interfaces.jsx";
 
 const PROFILESINDEX = 1;
 const LoadProfiles = ({ setClicked }) => {
@@ -20,20 +19,12 @@ const LoadProfiles = ({ setClicked }) => {
   const [msgId, profilesArray, interfacesArray] = profiles;
   const [selectedProfile, setSelectedProfile] = useState(null);
 
-  const [hasInterface, setHasInterface] = useState(null);
-
   useEffect(() => {
     const profileName = getSelectedProfileWithAttribute(profilesArray);
     if (profileName) {
       setProfiles((prevProfiles) => {
         const currProfiles = prevProfiles[PROFILESINDEX]; // position of profiles array [ id, profiles, interfaces ]
         delete currProfiles[profileName].selected;
-        setHasInterface(() => {
-          if ("ifName" in currProfiles[profileName].SERVER) {
-            return true;
-          }
-          return false;
-        });
         return [...prevProfiles];
       });
     }
@@ -47,7 +38,7 @@ const LoadProfiles = ({ setClicked }) => {
   const clicked = ({ selectedProfile, profilesArray }) => {
     setOwner(profilesArray[selectedProfile]);
     if (!("ifName" in profilesArray[selectedProfile].SERVER)) {
-      setHasInterface(false);
+      alert("Select a interface");
       return;
     }
     console.log("sending profiles", profilesArray);
@@ -65,22 +56,20 @@ const LoadProfiles = ({ setClicked }) => {
                 setProfiles={setProfiles}
                 profile={profilesArray[profileName]}
                 profileName={profileName}
+                interfaces={interfacesArray}
                 onClick={() => {
-                  setSelectedProfile(profileName);
+                  setSelectedProfile((prev) => {
+                    if (prev == profileName) {
+                      return null;
+                    }
+                    return profileName;
+                  });
                 }}
                 isSelectedProfile={selectedProfile === profileName}
                 key={index}
               />
             );
           })}
-        <Popup isOpen={hasInterface === false} onClose={() => null}>
-          <InterFacePicker
-            interfaces={interfacesArray}
-            setHasInterfaces={setHasInterface}
-            profile={profilesArray[selectedProfile]}
-            setClicked={setClicked}
-          />
-        </Popup>
         <div className="w-full flex flex-col gap-4 justify-center items-center h-full">
           <div className="profile-controls flex gap-10 justify-center items-center">
             <div

@@ -3,7 +3,7 @@ import { UsersContext, useUser } from "../contexts/UsersContextProvider.jsx";
 import ChatBox from "./ChatBox.jsx";
 import IntroAboutApplication from "./IntroAboutApplication.jsx";
 import { useActiveUser } from "../contexts/ActitveUserContextProvider.jsx";
-import { setEscape } from "./EscapeHanndler.jsx";
+import { setEscape } from "./EscapeHandler.jsx";
 
 function ChatBoxWrapper() {
   const { currentActiveUser, setCurrentActiveUser } = useActiveUser();

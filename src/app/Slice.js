@@ -4,7 +4,6 @@ import { AsyncDB } from "../utils/AsyncIndexedDB";
 /**
  * @typedef  {{ type: number, id: number, content: Object | string, isSender: boolean }} messageType
  */
-
 const storeConfig = {
   name: "messages",
   keyPath: "id",
@@ -18,6 +17,8 @@ const db = new AsyncDB("Message", storeConfig);
 window.addEventListener("beforeunload", () => {
   indexedDB.deleteDatabase("Message");
 });
+
+const LIMIT = 100;
 
 export const loadMore = createAsyncThunk(
   "messages/loadMore",
@@ -52,6 +53,8 @@ const slice = createSlice({
   reducers: {
     invalidateMessages(state, action) {
       const { userId, count } = action.payload;
+      console.log("invalidateMessages of ", userId);
+      if (state.byUser && state.byUser[userId].length <= LIMIT) return;
       state.byUser[userId] = state.byUser[userId]?.slice(count);
     },
 
@@ -104,8 +107,8 @@ const slice = createSlice({
       .addCase(addMessage.fulfilled, (state, action) => {
         const { userId, message } = action.payload;
         if (!state.byUser[userId]) state.byUser[userId] = [];
-        if (state.byUser[userId].lenght > 30)
-          state.byUser[userId] = state.byUser[userId].slice(10);
+        // if (state.byUser[userId].lenght > 30)
+        //   state.byUser[userId] = state.byUser[userId].slice(10);
 
         state.byUser[userId].push(message);
       })

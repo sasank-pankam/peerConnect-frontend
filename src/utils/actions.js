@@ -21,6 +21,7 @@ export const debounce = (func, wait) => {
   let identifier;
   return function(...args) {
     clearTimeout(identifier);
-    identifier = setTimeout(() => func.apply(this, args), wait);
+    console.log("clearing timeout for ", func);
+    identifier = setTimeout(() => func(...args), wait);
   };
 };

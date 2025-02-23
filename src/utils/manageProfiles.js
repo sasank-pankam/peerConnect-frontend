@@ -37,6 +37,7 @@ const useGetProfiles = () => {
         SERVER: {
           ip: "1.1.1.1",
           port: "2020",
+          ifName: "lo",
         },
       },
     },

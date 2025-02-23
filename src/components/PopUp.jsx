@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { setEscape } from "./EscapeHanndler";
+import { setEscape } from "./EscapeHandler";
 
 export const Popup = ({ children, isOpen, onClose }) => {
   if (!isOpen) {
