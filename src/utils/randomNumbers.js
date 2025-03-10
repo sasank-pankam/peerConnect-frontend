@@ -2,7 +2,7 @@
  * @returns {BigInt}
  */
 export const getRandom255BitNumber = () => {
-  const randomBytes = new Uint8Array(32); // 256 bits
+  const randomBytes = new Uint8Array(20); // 160 bits
   window.crypto.getRandomValues(randomBytes);
 
   // Set the most significant bit of the first byte to 0 for 255 bits

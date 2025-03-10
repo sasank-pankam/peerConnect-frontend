@@ -25,17 +25,12 @@ const LoadProfiles = ({ setClicked }) => {
       setProfiles((prevProfiles) => {
         const currProfiles = prevProfiles[PROFILESINDEX]; // position of profiles array [ id, profiles, interfaces ]
         delete currProfiles[profileName].selected;
-        setHasInterface(() => {
-          if ("ifName" in currProfiles[profileName].SERVER) {
-            return true;
-          }
-          return false;
-        });
         return [...prevProfiles];
       });
     }
     setSelectedProfile(profileName);
   }, [profilesArray]);
+  console.debug(profiles);
 
   const { sender } = useWebSocket();
 
@@ -43,11 +38,11 @@ const LoadProfiles = ({ setClicked }) => {
 
   const clicked = ({ selectedProfile, profilesArray }) => {
     setOwner(profilesArray[selectedProfile]);
-    if (!("ifName" in profilesArray[selectedProfile].SERVER)) {
+    if (!("if_name" in profilesArray[selectedProfile].INTERFACE)) {
       alert("Select a interface");
       return;
     }
-    console.log("sending profiles", profilesArray);
+    console.debug("sending profiles", profilesArray);
     sendProfiles(profilesArray, selectedProfile, sender, msgId);
     setClicked(true);
   };

@@ -22,6 +22,23 @@ const CustomLabel = ({ labelName, value }) => {
   );
 };
 
+const getInterFace = (iface, interfaces) => {
+  for (let _if of interfaces) {
+    if (_if.if_name == iface) return _if;
+  }
+  return {};
+};
+
+const getFriendlyName = (iface, interfaces) => {
+  const _if = getInterFace(iface, interfaces);
+  if (_if.if_name) return _if.friendly_name;
+  alert("No interface found");
+  return "";
+};
+
+const checkForInterface = (ifname, interfaces) => {
+  return getInterFace(ifname, interfaces).if_name ? true : false;
+};
 const Profile = ({
   isSelectedProfile,
   profile,
@@ -56,25 +73,18 @@ const Profile = ({
               defaultValue={profile.USER.name}
               labelName={"Visible Name"}
             />
-            <CustomInput
-              name={"ip"}
-              defaultValue={profile.SERVER.ip}
-              labelName={"Server Ip"}
-            />
-
-            <CustomInput
-              name={"port"}
-              defaultValue={profile.SERVER.port}
-              labelName={"Server Port"}
-            />
             <p>
               <label>Interface Name: </label>
-              <select name="ifname" id="bg-transparent">
+              <select
+                name="ifname"
+                id="bg-transparent"
+                defaultValue={profile.INTERFACE.if_name}
+              >
                 <option value="">Select</option>
                 {interfaces.map((ifName, index) => {
                   return (
-                    <option value={ifName} key={index}>
-                      {ifName}
+                    <option value={ifName.if_name} key={index}>
+                      {ifName.friendly_name}
                     </option>
                   );
                 })}
@@ -98,16 +108,14 @@ const Profile = ({
                 const formElement = formRef.current;
                 const name =
                   formElement.querySelectorAll('[name="name"]')[0].value;
-                const ip = formElement.querySelectorAll('[name="ip"]')[0].value;
-                const port =
-                  formElement.querySelectorAll('[name="port"]')[0].value;
                 const iface =
                   formElement.querySelectorAll('[name="ifname"]')[0].value;
+                const friendly_name = getFriendlyName(iface, interfaces);
 
                 profile.USER.name = name;
-                profile.SERVER.ip = ip;
-                profile.SERVER.port = port;
-                profile.SERVER.ifName = iface;
+                profile.INTERFACE.if_name = iface;
+                profile.INTERFACE.friendly_name = friendly_name;
+                profile.INTERFACE.ip = getInterFace(iface, interfaces).ip;
 
                 setProfiles((prev) => {
                   return [...prev];
@@ -129,13 +137,12 @@ const Profile = ({
         >
           <div>
             <CustomLabel labelName={"Visible Name"} value={profile.USER.name} />
-            <CustomLabel labelName="Server Ip" value={profile.SERVER.ip} />
-            <CustomLabel labelName="Server Port" value={profile.SERVER.port} />
+            <CustomLabel labelName="Ip" value={profile.INTERFACE.ip} />
             <CustomLabel
               labelName="Interface Name"
               value={
-                interfaces.includes(profile.SERVER.ifName)
-                  ? profile.SERVER.ifName
+                checkForInterface(profile.INTERFACE.if_name, interfaces)
+                  ? profile.INTERFACE.friendly_name
                   : "Select"
               }
             />

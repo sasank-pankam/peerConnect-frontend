@@ -10,17 +10,9 @@ export const UsersContext = createContext();
  * @property {Object.<number, Object>} userDetails - A mapping of user IDs to their details (name and possibly more).
  * @property {Function} setUserDetails - Function to update user details.
  */
-
 export const UsersProvider = ({ children }) => {
   const [users, setUsers] = useState([1, 2, 3, 4, 5, 6]);
-  const [userDetails, setUserDetails] = useState({
-    [1]: { name: "test-1" },
-    [2]: { name: "test-2" },
-    [3]: { name: "test-3" },
-    [4]: { name: "test-4" },
-    [5]: { name: "test-5" },
-    [6]: { name: "test-6" },
-  });
+  const [userDetails, setUserDetails] = useState({});
 
   const value = {
     users,

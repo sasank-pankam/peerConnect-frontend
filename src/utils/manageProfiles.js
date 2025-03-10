@@ -57,9 +57,8 @@ const useGetProfiles = () => {
   const [profiles, setProfiles] = useState([null, {}, []]);
   const { sender, registerHandler, unRegisterHandler } = useWebSocket();
   const extractAndSetProfiles = (message) => {
-    const profilesArray = message.content;
-    const interfaces = message.interfaces;
-    setProfiles([message.msgId, profilesArray, interfaces]);
+    const { profiles, interfaces } = message.content;
+    setProfiles([message.msgId, profiles, interfaces]);
     unRegisterHandler(consts.CHANGED_PROFILE_LIST);
   };
 
