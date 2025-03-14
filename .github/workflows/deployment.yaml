@@ -35,9 +35,9 @@ jobs:
       - name: Copy Build Files
         run: |
 
-          rm -rf target-repo/src/webpage/*
-          mkdir target-repo/src/webpage -p
-          cp -r dist/* target-repo/src/webpage/
+          rm -rf target-repo/webpage/*
+          mkdir target-repo/webpage -p
+          cp -r dist/* target-repo/webpage/
 
       - name: Push Changes to Target Repo
         run: |

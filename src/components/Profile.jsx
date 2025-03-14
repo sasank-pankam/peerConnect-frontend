@@ -128,13 +128,7 @@ const Profile = ({
           </div>
         </form>
       ) : (
-        <div
-          // onClick={(event) => {
-          //   event.preventDefault();
-          //   event.stopPropagation();
-          // }}
-          className="profile-card"
-        >
+        <div className="profile-card">
           <div>
             <CustomLabel labelName={"Visible Name"} value={profile.USER.name} />
             <CustomLabel labelName="Ip" value={profile.INTERFACE.ip} />
