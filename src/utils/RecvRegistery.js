@@ -69,7 +69,7 @@ export const recvRegistery = (messagesSocket, signalsSocket) => {
     [consts.SIGNALS, signals],
   ]);
   const registerHandler = (header, func) => {
-    console.log(`registerred ${header}!`);
+    console.info(`registerred ${header}!`);
     const type = header[0];
     const handler = socMap.get(type);
     handler.addHandle(header, func);

@@ -8,4 +8,9 @@ export class Message {
     this.peerId = peerId;
     this.msgId = msgId;
   }
+
+  fromJSON = (data) => {
+    const { content, header, peerId, msgId } = data;
+    return Message(header, content, peerId, msgId);
+  };
 }

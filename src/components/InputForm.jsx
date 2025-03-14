@@ -19,8 +19,6 @@ const useCleanInput = (inpRef, currentActiveUser, setIsSent) => {
   }, [currentActiveUser, inpRef]);
 };
 
-let flag = false;
-
 const InputForm = () => {
   const dispatch = useDispatch();
   const { sender } = useWebSocket();
