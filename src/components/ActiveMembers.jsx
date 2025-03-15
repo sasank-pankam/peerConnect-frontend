@@ -6,6 +6,8 @@ import Search from "../assets/search.jsx";
 import { debounce } from "../utils/actions.js";
 import { useInteraction } from "../contexts/InteractionContextProvider.jsx";
 import { useWebSocket } from "../contexts/WebSocketContextProvider.jsx";
+import { Message } from "../utils/Message.js";
+import { getRandomNumber } from "../utils/randomNumbers.js";
 
 /*
 
@@ -19,18 +21,36 @@ import { useWebSocket } from "../contexts/WebSocketContextProvider.jsx";
 
 const ActiveMembers = () => {
   const [searchValue, setSearchValue] = useState("");
-  const { users, setUsers, userDetails } = useUser();
+  const [request, setRequest] = useState(null);
+  const { users, setUsers, userDetails, setUserDetails } = useUser();
   const { isPinned } = useInteraction();
 
-  const { registerHandler, unRegisterHandler } = useWebSocket();
+  const { registerHandler, unRegisterHandler, sender } = useWebSocket();
 
-  // useEffect(() => {
-  //   registerHandler();
-  //
-  //   return () => {
-  //     unRegisterHandler(consts.);
-  //   };
-  // }, []);
+  useEffect(() => {
+    registerHandler("for results", (message) => {
+      const msg = Message.fromJSON(message);
+      if (msg.msgId == request.msgId) {
+        setRequest((prev) => ({ ...prev, state: 0 }));
+        // Todo:  change this to a seperate function that adds the users without duplicates
+        setRequest((prev) => {
+          const { content } = message;
+          const usersSet = new Set(users);
+          const peers = content.filter((peer) => !usersSet.has(peer.peerId));
+          const peerIds = peers.map((peer) => peer.peerId);
+          setUsers((prev) => [...prev, peerIds]);
+          setUserDetails((prev) => ({
+            ...prev,
+            ...Object.fromEntries(peers.map((peer) => [peer.peerId, peer])),
+          }));
+        });
+      }
+    });
+
+    return () => {
+      unRegisterHandler();
+    };
+  }, []);
 
   const inputRef = useRef(null);
   // search functionality
@@ -66,6 +86,15 @@ const ActiveMembers = () => {
     [],
   );
 
+  const sendRequest = (state, header) => {
+    const id = getRandomNumber();
+    setRequest({
+      state,
+      msgId: id,
+    });
+    sender(new Message(header, null, null, id));
+  };
+
   return (
     <>
       <div
@@ -100,6 +129,16 @@ const ActiveMembers = () => {
             key={index} // for react
           />
         ))}
+        {searchValue !== "" && request.state === 1 && (
+          <button onClick={() => sendRequest(1, "normal search request")}>
+            did&apos;t find
+          </button>
+        )}
+        {searchValue !== "" && request.state === 2 && (
+          <button onClick={() => sendRequest(2, "gossip request")}>
+            Gossip search
+          </button>
+        )}
       </div>
     </>
   );

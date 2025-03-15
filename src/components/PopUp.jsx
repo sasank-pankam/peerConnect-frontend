@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { setEscape } from "./EscapeHandler";
 
-export const Popup = ({ children, isOpen, onClose }) => {
+export const Popup = ({ children, isOpen, onClose, escape }) => {
   if (!isOpen) {
     setEscape.remove();
     return null;
   }
-  setEscape.add(onClose);
+  if (escape) setEscape.add(onClose);
+  else setEscape.add(() => { });
 
   return (
     <div

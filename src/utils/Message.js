@@ -9,8 +9,8 @@ export class Message {
     this.msgId = msgId;
   }
 
-  fromJSON = (data) => {
+  static fromJSON = (data) => {
     const { content, header, peerId, msgId } = data;
-    return Message(header, content, peerId, msgId);
+    return new Message(header, content, peerId, msgId);
   };
 }

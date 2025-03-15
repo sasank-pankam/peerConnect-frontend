@@ -1,7 +1,7 @@
 /**
  * @returns {BigInt}
  */
-export const getRandom255BitNumber = () => {
+export const getRandomNumber = () => {
   const randomBytes = new Uint8Array(20); // 160 bits
   window.crypto.getRandomValues(randomBytes);
 

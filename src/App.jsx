@@ -46,7 +46,6 @@ const testMessage = {
 };
 
 const App = () => {
-  const [mess, setMess] = useState(testMessage);
   return (
     <WebSocketProvider>
       <IdCounterProvider>

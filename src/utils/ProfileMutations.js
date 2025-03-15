@@ -1,4 +1,4 @@
-import { getRandom255BitNumber } from "./randomNumbers";
+import { getRandomNumber } from "./randomNumbers";
 const ipv4Pattern =
   /^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/gm;
 const ipv6Pattern =
@@ -36,7 +36,7 @@ export const askProfile = () => {
           return [config.toLowerCase(), inp];
         }),
       ),
-      id: getRandom255BitNumber(),
+      id: getRandomNumber(),
     };
   } catch (_) {
     return null;
