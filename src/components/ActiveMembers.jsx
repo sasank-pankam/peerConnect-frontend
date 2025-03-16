@@ -1,9 +1,16 @@
-import { useContext, useMemo, useState, useRef, useCallback } from "react";
+import {
+  useContext,
+  useMemo,
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+} from "react";
 import UserBox from "./UserBox";
 import { UsersContext, useUser } from "../contexts/UsersContextProvider";
 import Search from "../assets/search.jsx";
 
-import { debounce } from "../utils/actions.js";
+import { addUsersWithoutDuplicates, debounce } from "../utils/actions.js";
 import { useInteraction } from "../contexts/InteractionContextProvider.jsx";
 import { useWebSocket } from "../contexts/WebSocketContextProvider.jsx";
 import { Message } from "../utils/Message.js";
@@ -28,29 +35,43 @@ const ActiveMembers = () => {
   const { registerHandler, unRegisterHandler, sender } = useWebSocket();
 
   useEffect(() => {
-    registerHandler("for results", (message) => {
+    const handleSearchRequests = (msg, sucessState, failureState) => {
+      setRequest((prev) => {
+        if (msg.msgId == prev.msgId) {
+          if (msg.content.length === 0)
+            return {
+              state: failureState,
+              msgId: null,
+            };
+
+          addUsersWithoutDuplicates(msg.content, setUsers, setUserDetails);
+          return {
+            state: sucessState,
+            msgId: null,
+          };
+        }
+      });
+    };
+    registerHandler("0result for search name", (message) => {
       const msg = Message.fromJSON(message);
-      if (msg.msgId == request.msgId) {
-        setRequest((prev) => ({ ...prev, state: 0 }));
-        // Todo:  change this to a seperate function that adds the users without duplicates
-        setRequest((prev) => {
-          const { content } = message;
-          const usersSet = new Set(users);
-          const peers = content.filter((peer) => !usersSet.has(peer.peerId));
-          const peerIds = peers.map((peer) => peer.peerId);
-          setUsers((prev) => [...prev, peerIds]);
-          setUserDetails((prev) => ({
-            ...prev,
-            ...Object.fromEntries(peers.map((peer) => [peer.peerId, peer])),
-          }));
-        });
-      }
+      handleSearchRequests(msg, 2, 2);
     });
 
+    registerHandler("0result for gossip search name", (message) => {
+      const msg = Message.fromJSON(message);
+      handleSearchRequests(msg, 0, 0);
+    });
     return () => {
-      unRegisterHandler();
+      unRegisterHandler("1for results");
     };
   }, []);
+
+  useEffect(() => {
+    setRequest({
+      state: 1,
+      msgId: null,
+    });
+  }, [searchValue]);
 
   const inputRef = useRef(null);
   // search functionality
@@ -59,9 +80,10 @@ const ActiveMembers = () => {
   }, 200);
 
   const filteredUsers = useMemo(() => {
-    searchValue && console.log("::searched for ", searchValue);
+    console.log(userDetails);
     return users.filter((userId) => {
       if (!userDetails[userId]) return false;
+      console.log(userDetails[userId]);
       return userDetails[userId].name
         .toLowerCase()
         .includes(searchValue.toLowerCase());
@@ -88,11 +110,13 @@ const ActiveMembers = () => {
 
   const sendRequest = (state, header) => {
     const id = getRandomNumber();
-    setRequest({
-      state,
-      msgId: id,
+    setRequest(() => {
+      return {
+        state,
+        msgId: id,
+      };
     });
-    sender(new Message(header, null, null, id));
+    sender(new Message(header, searchValue, null, id));
   };
 
   return (
@@ -129,13 +153,13 @@ const ActiveMembers = () => {
             key={index} // for react
           />
         ))}
-        {searchValue !== "" && request.state === 1 && (
-          <button onClick={() => sendRequest(1, "normal search request")}>
+        {searchValue !== "" && (request === null || request.state === 1) && (
+          <button onClick={() => sendRequest(1, "1search name")}>
             did&apos;t find
           </button>
         )}
-        {searchValue !== "" && request.state === 2 && (
-          <button onClick={() => sendRequest(2, "gossip request")}>
+        {searchValue !== "" && request !== null && request.state === 2 && (
+          <button onClick={() => sendRequest(2, "1gossip search name")}>
             Gossip search
           </button>
         )}

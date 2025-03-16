@@ -47,7 +47,7 @@ const InputForm = () => {
     if (message === "") return;
     message = parseMessage(message);
 
-    sender(new Message("1temp", message, currentActiveUser, null));
+    sender(new Message("0send text", message, currentActiveUser, null));
 
     dispatch(
       addMessage({

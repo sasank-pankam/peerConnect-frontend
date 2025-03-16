@@ -25,3 +25,16 @@ export const debounce = (func, wait) => {
     identifier = setTimeout(() => func(...args), wait);
   };
 };
+
+export const addUsersWithoutDuplicates = (users, setUsers, setUserDetails) => {
+  setUsers((prev) => {
+    const usersSet = new Set(prev);
+    const peers = users.filter((peer) => !usersSet.has(peer.peerId));
+    const peerIds = peers.map((peer) => peer.peerId);
+    setUserDetails((prev) => ({
+      ...prev,
+      ...Object.fromEntries(peers.map((peer) => [peer.peerId, peer])),
+    }));
+    return [...prev, peerIds];
+  });
+};

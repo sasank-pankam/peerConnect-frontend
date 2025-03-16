@@ -1,5 +1,7 @@
 import { createContext, useEffect, useState, useContext } from "react";
 import { useWebSocket } from "./WebSocketContextProvider";
+import { addUsersWithoutDuplicates } from "../utils/actions";
+import { Message } from "../utils/Message";
 
 export const UsersContext = createContext();
 
@@ -40,16 +42,8 @@ export const UsersProvider = ({ children }) => {
 
     console.info("Adding handle 1sync users");
     registerHandler("1sync users", (message) => {
-      console.log(message);
-      const { content } = message;
-      const usersSet = new Set(users);
-      const peers = content.filter((peer) => !usersSet.has(peer.peerId));
-      const peerIds = peers.map((peer) => peer.peerId);
-      setUsers((prev) => [...prev, peerIds]);
-      setUserDetails((prev) => ({
-        ...prev,
-        ...Object.fromEntries(peers.map((peer) => [peer.peerId, peer])),
-      }));
+      const msg = Message.fromJSON(message);
+      addUsersWithoutDuplicates(msg.content, setUsers, setUserDetails);
     });
   }, []);
 
