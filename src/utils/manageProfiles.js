@@ -3,6 +3,7 @@ import consts from "../Constants";
 import { dataSender } from "./Sender";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
 import { Message } from "./Message";
+import Profile from "../components/Profile";
 
 /*
   profile = {
@@ -52,12 +53,25 @@ res = {
 }
 
 */
-
+const filterProfiles = (profiles, interfaces) => {
+  const if_names = interfaces.map((iface) => {
+    return iface.if_name;
+  });
+  profiles.forEach((profile) => {
+    console.log(if_names.indexOf(profile.INTERFACE.if_name));
+    if (if_names.indexOf(profile.INTERFACE.if_name) === -1) {
+      profile.INTERFACE.if_name = "";
+      profile.INTERFACE.ip = "";
+      return;
+    }
+  });
+};
 const useGetProfiles = () => {
   const [profiles, setProfiles] = useState([null, {}, []]);
   const { sender, registerHandler, unRegisterHandler } = useWebSocket();
   const extractAndSetProfiles = (message) => {
     const { profiles, interfaces } = message.content;
+    filterProfiles(Object.values(profiles), interfaces);
     setProfiles([message.msgId, profiles, interfaces]);
     unRegisterHandler(consts.CHANGED_PROFILE_LIST);
   };

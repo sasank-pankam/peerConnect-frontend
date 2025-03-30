@@ -80,10 +80,8 @@ const ActiveMembers = () => {
   }, 200);
 
   const filteredUsers = useMemo(() => {
-    console.log(userDetails);
     return users.filter((userId) => {
       if (!userDetails[userId]) return false;
-      console.log(userDetails[userId]);
       return userDetails[userId].name
         .toLowerCase()
         .includes(searchValue.toLowerCase());

@@ -2,10 +2,19 @@ import { useEffect, useState } from "react";
 import { Popup } from "./PopUp";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
 import { Message } from "../utils/Message";
+import { useUser } from "../contexts/UsersContextProvider";
 
 export const BootStrapPrompt = () => {
   const { registerHandler, unRegisterHandler, sender } = useWebSocket();
   const [message, setMessage] = useState(false);
+  const { users } = useUser();
+
+  useEffect(() => {
+    if (users.length === 0) {
+      return;
+    }
+    setMessage(false);
+  }, [users]);
 
   useEffect(() => {
     registerHandler("1peer name for discovery", (message) => {

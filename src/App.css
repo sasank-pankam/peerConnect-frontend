@@ -97,6 +97,7 @@ input {
   width: 100%;
   outline: none;
   border: none;
+  cursor: text !important;
 }
 
 .active-users-container {

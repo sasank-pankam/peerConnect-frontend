@@ -29,12 +29,23 @@ export const debounce = (func, wait) => {
 export const addUsersWithoutDuplicates = (users, setUsers, setUserDetails) => {
   setUsers((prev) => {
     const usersSet = new Set(prev);
-    const peers = users.filter((peer) => !usersSet.has(peer.peerId));
-    const peerIds = peers.map((peer) => peer.peerId);
-    setUserDetails((prev) => ({
+    const newUsersMap = new Map(users.map((user) => [user.peerId, user]));
+
+    setUserDetails((prevDetails) => {
+      const abc = Object.fromEntries(newUsersMap.entries());
+      return {
+        ...prevDetails,
+        ...Object.fromEntries(newUsersMap.entries()),
+      };
+    });
+    const arr = [...newUsersMap.keys()];
+    return [
       ...prev,
-      ...Object.fromEntries(peers.map((peer) => [peer.peerId, peer])),
-    }));
-    return [...prev, peerIds];
+      ...arr.filter((userId) => {
+        const res = !usersSet.has(userId);
+        usersSet.add(userId);
+        return res;
+      }),
+    ];
   });
 };

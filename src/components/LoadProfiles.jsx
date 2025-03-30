@@ -13,6 +13,10 @@ import {
   askAndRemoveProfile,
 } from "../utils/ProfileMutations.js";
 
+const checkProfile = (profile) => {
+  return profile.USER.name && profile.INTERFACE.ip;
+};
+
 const PROFILESINDEX = 1;
 const LoadProfiles = ({ setClicked }) => {
   const [profiles, setProfiles] = useGetProfiles();
@@ -58,9 +62,10 @@ const LoadProfiles = ({ setClicked }) => {
                 profile={profilesArray[profileName]}
                 profileName={profileName}
                 interfaces={interfacesArray}
-                onClick={() => {
+                onClick={(toggle) => {
                   setSelectedProfile((prev) => {
                     if (prev == profileName) {
+                      if (toggle === false) return prev;
                       return null;
                     }
                     return profileName;
@@ -95,6 +100,10 @@ const LoadProfiles = ({ setClicked }) => {
               onClick={() => {
                 if (!selectedProfile) {
                   alert("select a profile");
+                  return;
+                }
+                if (!checkProfile(profilesArray[selectedProfile])) {
+                  alert("Fill profile first before selecting.");
                   return;
                 }
                 clicked({

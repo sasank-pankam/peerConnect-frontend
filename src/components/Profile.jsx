@@ -32,7 +32,6 @@ const getInterFace = (iface, interfaces) => {
 const getFriendlyName = (iface, interfaces) => {
   const _if = getInterFace(iface, interfaces);
   if (_if.if_name) return _if.friendly_name;
-  alert("No interface found");
   return "";
 };
 
@@ -46,7 +45,7 @@ const Profile = ({
   onClick,
   setProfiles,
 }) => {
-  const [edit, setEdit] = useState(false);
+  const [edit, setEdit] = useState(profile.edit ? true : false);
   const formRef = useRef(null);
   return (
     <div
@@ -79,6 +78,7 @@ const Profile = ({
                 name="ifname"
                 id="bg-transparent"
                 defaultValue={profile.INTERFACE.if_name}
+                autoFocus={true}
               >
                 <option value="">Select</option>
                 {interfaces.map((ifName, index) => {
@@ -121,6 +121,7 @@ const Profile = ({
                   return [...prev];
                 });
                 setEdit(false);
+                onClick(false);
               }}
             >
               Confirm

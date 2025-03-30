@@ -4,10 +4,14 @@ import { useSelector } from "react-redux";
 import { useWebSocket } from "../contexts/WebSocketContextProvider";
 import { useInteraction } from "../contexts/InteractionContextProvider";
 import { useDispatch } from "react-redux";
-import { invalidateMessages, loadMore } from "../app/Slice";
+import { addMessage, invalidateMessages, loadMore } from "../app/Slice";
 import ItemBox from "./ItemBox";
-import { createRef, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useDebounce } from "../utils/Debounce";
+import { getMessage } from "./MessageBox";
+import { Message } from "../utils/Message";
+import { useActiveUser } from "../contexts/ActitveUserContextProvider";
+import { useCounter } from "../contexts/IdCounterContextProvider";
 
 const blockedStyle = {
   display: "flex",
@@ -21,6 +25,9 @@ const ChatBox = ({ id }) => {
   const { blockedYou, youBlocked } = useInteraction();
   const scrollRef = useRef();
 
+  const { registerHandler, unRegisterHandler } = useWebSocket();
+  const { currentActiveUser } = useActiveUser();
+  const { counter } = useCounter();
   const dispatch = useDispatch();
   const messageList = useSelector((state) => state.byUser[id]) || [];
 
@@ -38,6 +45,22 @@ const ChatBox = ({ id }) => {
       }),
     );
   };
+
+  useEffect(() => {
+    registerHandler("0received text", (message) => {
+      const msg = Message.fromJSON(message);
+
+      dispatch(
+        addMessage({
+          userId: currentActiveUser,
+
+          message: getMessage(msg.content, counter(), currentActiveUser, {
+            isSender: true,
+          }),
+        }),
+      );
+    });
+  }, []);
 
   const handleMessagesScroll = useDebounce((event, bottom, height) => {
     const { scrollOffset } = event;

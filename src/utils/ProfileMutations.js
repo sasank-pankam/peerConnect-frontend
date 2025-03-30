@@ -53,6 +53,7 @@ export const askAndAddProfile = (setProfiles) => {
     profiles[`${Date.now()}`] = {
       USER: Object.fromEntries(userThings.map((item) => [item, profile[item]])),
       INTERFACE: { if_name: "", friendly_name: "" },
+      edit: true,
     };
 
     return [...prev];

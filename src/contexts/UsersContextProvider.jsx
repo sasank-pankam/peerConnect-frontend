@@ -28,16 +28,7 @@ export const UsersProvider = ({ children }) => {
   useEffect(() => {
     console.info("Adding handle 1new peer");
     registerHandler("1new peer", (message) => {
-      console.log(message);
-      const { peerId, content } = message;
-      if (users.includes(peerId)) return;
-      setUsers((prev) => [...prev, peerId]);
-      setUserDetails((prev) => ({
-        ...prev,
-        [peerId]: {
-          ...content,
-        },
-      }));
+      addUsersWithoutDuplicates([message.content], setUsers, setUserDetails);
     });
 
     console.info("Adding handle 1sync users");

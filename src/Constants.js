@@ -1,10 +1,10 @@
 export default {
   NewUser: "this is a command",
   UserLeft: "userleft",
-  ActiveUser: "1change in activeuser",
+  ActiveUser: "1connect peer",
   SYNC_USERS: "sync-users",
   // IP: "172.16.197.166",
-  //IP: "172.16.192.253",
+  // IP: "172.16.192.253",
   IP: "127.0.0.1",
   // ALT_IP: "127.0.0.5",
   SIGNALS_PORT: 12260,
