@@ -45,7 +45,12 @@ const Profile = ({
   onClick,
   setProfiles,
 }) => {
-  const [edit, setEdit] = useState(profile.edit ? true : false);
+  let toEdit = false;
+  if (profile.edit) {
+    toEdit = true;
+    delete profile.edit;
+  }
+  const [edit, setEdit] = useState(toEdit);
   const formRef = useRef(null);
   return (
     <div
