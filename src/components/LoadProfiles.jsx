@@ -78,13 +78,13 @@ const LoadProfiles = ({ setClicked }) => {
           })}
         <div className="w-full flex flex-col gap-4 justify-center items-center h-full">
           <div className="profile-controls flex gap-10 justify-center items-center">
-            <div
+            <button
               onClick={() => askAndAddProfile(setProfiles)}
               className="add cursor-pointer"
             >
               Add
-            </div>
-            <div
+            </button>
+            <button
               onClick={() => {
                 askAndRemoveProfile(selectedProfile, setProfiles);
                 setSelectedProfile(null);
@@ -92,10 +92,10 @@ const LoadProfiles = ({ setClicked }) => {
               className="remove cursor-pointer"
             >
               Remove
-            </div>
+            </button>
           </div>
           <div className="flex justify-center">
-            <div
+            <button
               className="flex justify-center items-center px-5 py-2 bg-gray-300 rounded-2xl w-fit cursor-pointer"
               onClick={() => {
                 if (!selectedProfile) {
@@ -113,7 +113,7 @@ const LoadProfiles = ({ setClicked }) => {
               }}
             >
               proceed
-            </div>
+            </button>
           </div>
         </div>
       </div>

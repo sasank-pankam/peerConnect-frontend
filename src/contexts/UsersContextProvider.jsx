@@ -30,6 +30,9 @@ export const UsersProvider = ({ children }) => {
     registerHandler("1new peer", (message) => {
       addUsersWithoutDuplicates([message.content], setUsers, setUserDetails);
     });
+    // registerHandler("1new peer", (message) => {
+    //   addUsersWithoutDuplicates([message.content], setUsers, setUserDetails);
+    // });
 
     console.info("Adding handle 1sync users");
     registerHandler("1sync users", (message) => {

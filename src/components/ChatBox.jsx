@@ -55,7 +55,7 @@ const ChatBox = ({ id }) => {
           userId: currentActiveUser,
 
           message: getMessage(msg.content, counter(), currentActiveUser, {
-            isSender: true,
+            isSender: false,
           }),
         }),
       );
